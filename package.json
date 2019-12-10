@@ -5,15 +5,19 @@
   "private": true,
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack.config.js"
+    "build": "webpack --config webpack.config.js",
+    "start": "webpack-dev-server --open"
   },
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.10"
-  },
+  "devDependencies": {},
   "dependencies": {
-    "strava_api_v3": "github:blineberry/StravaAPIv3-js"
+    "express": "^4.17.1",
+    "express-session": "^1.17.0",
+    "nunjucks": "^3.2.0",
+    "sequelize": "^5.21.2",
+    "strava_api_v3": "github:blineberry/StravaAPIv3-js",
+    "superagent": "^5.1.2",
+    "tedious": "^6.6.2"
   }
 }
