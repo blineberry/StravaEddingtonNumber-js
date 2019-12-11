@@ -6,16 +6,12 @@ class AccessToken extends Model {
   static init(sequelize, modelName) {
     super.init({
       // attributes
-      id: {
-        type: Sequelize.INTEGER, 
-        primaryKey: true,
-        autoIncrement: true
-      },
       athleteId: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
+        primaryKey: true,
       },
       scope: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.STRING
       },
       code: {
           type: Sequelize.STRING

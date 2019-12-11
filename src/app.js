@@ -83,15 +83,36 @@ app.get('/auth', (req, res) => {
         })
         .then((response) => {
             console.log(response);
-                        
-            data.accessToken.create({
+            
+            var atCreatePromise = data.accessToken.upsert({
                 athleteId: response.body.athlete.id,
-                //scope: response.body.athleteId,
+                scope: req.query.scope,
                 code: response.body.access_token,
                 expiresAt: response.body.expires_at
-            }).then(at => {
-                req.session.stravaToken = at;
+            },
+            {
+                returning: true
+            });
+            
+            var rtCreatePromise = data.refreshToken.findOrCreate({
+                where: {
+                    athleteId: response.body.athlete.id,
+                },
+                defaults: {
+                    athleteId: response.body.athlete.id,
+                    scope: req.query.scope,
+                    code: response.body.refresh_token,
+                },                
+            });
+
+            Promise.all([atCreatePromise,rtCreatePromise])
+            .then(values => {
+                req.session.stravaToken = values[0][0];
                 res.redirect('/');
+            })
+            .catch(error => {
+                console.log(error);
+                res.send('error');
             });
         }, (error) => {
             console.log(error);
@@ -107,7 +128,7 @@ app.post('/deauthorize', (req, res) => {
     request
         .post('https://www.strava.com/oauth/deauthorize')
         .send({
-            access_token: req.session.stravaToken
+            access_token: req.session.stravaToken.code
         })
         .then((response) => {
             console.log(response);
