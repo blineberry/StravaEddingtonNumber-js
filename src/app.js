@@ -3,6 +3,7 @@ const Sequelize = require('sequelize');
 const session = require('express-session');
 const nunjucks = require('nunjucks');
 const request = require('superagent');
+const data = require('../DAL/data');
 
 const app = express();
 const port = process.env.PORT;
@@ -24,8 +25,10 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
     retry: {
         match: [
             Sequelize.TimeoutError,
-            Sequelize.ConnectionError
-        ]
+            Sequelize.ConnectionError,
+            Sequelize.ConnectionTimedOutError
+        ],
+        max: 3
     }
 });
 
@@ -37,9 +40,11 @@ app.use(session({
     saveUninitialized: false
 }));
 
+data.init(sequelize);
+
 sequelize.authenticate()
     .then(() => {
-        console.log('Connected');
+        console.log('Connected');        
     })
     .catch(err => {
         console.log(err);
@@ -78,8 +83,37 @@ app.get('/auth', (req, res) => {
         })
         .then((response) => {
             console.log(response);
-            req.session.stravaToken = response.body.access_token;
-            res.redirect('/');
+            
+            var atCreatePromise = data.accessToken.upsert({
+                athleteId: response.body.athlete.id,
+                scope: req.query.scope,
+                code: response.body.access_token,
+                expiresAt: response.body.expires_at
+            },
+            {
+                returning: true
+            });
+            
+            var rtCreatePromise = data.refreshToken.findOrCreate({
+                where: {
+                    athleteId: response.body.athlete.id,
+                },
+                defaults: {
+                    athleteId: response.body.athlete.id,
+                    scope: req.query.scope,
+                    code: response.body.refresh_token,
+                },                
+            });
+
+            Promise.all([atCreatePromise,rtCreatePromise])
+            .then(values => {
+                req.session.stravaToken = values[0][0];
+                res.redirect('/');
+            })
+            .catch(error => {
+                console.log(error);
+                res.send('error');
+            });
         }, (error) => {
             console.log(error);
             res.send('error');
@@ -94,7 +128,7 @@ app.post('/deauthorize', (req, res) => {
     request
         .post('https://www.strava.com/oauth/deauthorize')
         .send({
-            access_token: req.session.stravaToken
+            access_token: req.session.stravaToken.code
         })
         .then((response) => {
             console.log(response);

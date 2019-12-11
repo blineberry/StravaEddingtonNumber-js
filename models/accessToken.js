@@ -1,23 +1,30 @@
 const Sequelize = require('sequelize');
 
 const Model = Sequelize.Model;
-class AccessToken extends Model {}
-AccessToken.init({
-  // attributes
-  athleteId: {
-    type: Sequelize.INTEGER
-  },
-  scope: {
-    type: Sequelize.BOOLEAN
-  },
-  code: {
-      type: Sequelize.STRING
-  },
-  expiresAt: {
-      type: Sequelize.DATE
+
+class AccessToken extends Model {
+  static init(sequelize, modelName) {
+    super.init({
+      // attributes
+      athleteId: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+      },
+      scope: {
+        type: Sequelize.STRING
+      },
+      code: {
+          type: Sequelize.STRING
+      },
+      expiresAt: {
+          type: Sequelize.DATE
+      }
+    }, {  
+      sequelize,
+      modelName: modelName
+      // options
+    });
   }
-}, {
-  sequelize,
-  modelName: 'accessToken'
-  // options
-});
+}
+
+module.exports = AccessToken;
