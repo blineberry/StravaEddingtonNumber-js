@@ -11,3 +11,5 @@ The app expects an `.env` file with the following key/values:
 - NODE_ENV: 'development' || anything else is treated as production
 - STRAVA_CLIENT_ID: client Id for your Strava App
 - STRAVA_CLIENT_SECRET: client secret for your Strava App
+
+I've been using VS Code's Launch Configurations to run the app and load the `.env`
