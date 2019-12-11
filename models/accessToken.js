@@ -3,10 +3,8 @@ const Sequelize = require('sequelize');
 const Model = Sequelize.Model;
 
 class AccessToken extends Model {
-  constructor(sequelize) {
-    super();
-
-    this.init({
+  static init(sequelize, modelName) {
+    super.init({
       // attributes
       id: {
         type: Sequelize.INTEGER, 
@@ -27,7 +25,7 @@ class AccessToken extends Model {
       }
     }, {  
       sequelize,
-      modelName: 'accessToken'
+      modelName: modelName
       // options
     });
   }

@@ -1,7 +1,10 @@
 var AccessToken = require('../models/accessToken');
 
-module.exports = {
-    init: (sequelize) => {
-        this.accessToken = new AccessToken(sequelize);
+class Data {
+    static init(sequelize) {
+        AccessToken.init(sequelize,'accessToken');
+        this.accessToken = AccessToken;
     }
-};
+}
+
+module.exports = Data;

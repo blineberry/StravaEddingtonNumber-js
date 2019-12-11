@@ -27,7 +27,8 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
             Sequelize.TimeoutError,
             Sequelize.ConnectionError,
             Sequelize.ConnectionTimedOutError
-        ]
+        ],
+        max: 3
     }
 });
 
@@ -83,11 +84,11 @@ app.get('/auth', (req, res) => {
         .then((response) => {
             console.log(response);
                         
-            accessToken.create({
-                athleteId: response.body.athleteId,
-                scope: response.body.athleteId,
-                code: response.body.athleteId,
-                expiresAt: response.body.expiresAt
+            data.accessToken.create({
+                athleteId: response.body.athlete.id,
+                //scope: response.body.athleteId,
+                code: response.body.access_token,
+                expiresAt: response.body.expires_at
             }).then(at => {
                 req.session.stravaToken = at;
                 res.redirect('/');
