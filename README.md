@@ -2,6 +2,7 @@ The end goal of this project is to have something that calculates the Eddington 
 
 ## Getting Started
 The app expects an `.env` file with the following key/values:
+- PORT: the port number to use for the localhost server
 - DB_NAME: the name of the database
 - DB_USER: the username for the database
 - DB_PASS: the password for the username for the database
