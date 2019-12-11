@@ -3,6 +3,7 @@ const Sequelize = require('sequelize');
 const session = require('express-session');
 const nunjucks = require('nunjucks');
 const request = require('superagent');
+const data = require('../DAL/data');
 
 const app = express();
 const port = process.env.PORT;
@@ -24,7 +25,8 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
     retry: {
         match: [
             Sequelize.TimeoutError,
-            Sequelize.ConnectionError
+            Sequelize.ConnectionError,
+            Sequelize.ConnectionTimedOutError
         ]
     }
 });
@@ -37,9 +39,11 @@ app.use(session({
     saveUninitialized: false
 }));
 
+data.init(sequelize);
+
 sequelize.authenticate()
     .then(() => {
-        console.log('Connected');
+        console.log('Connected');        
     })
     .catch(err => {
         console.log(err);
@@ -78,8 +82,16 @@ app.get('/auth', (req, res) => {
         })
         .then((response) => {
             console.log(response);
-            req.session.stravaToken = response.body.access_token;
-            res.redirect('/');
+                        
+            accessToken.create({
+                athleteId: response.body.athleteId,
+                scope: response.body.athleteId,
+                code: response.body.athleteId,
+                expiresAt: response.body.expiresAt
+            }).then(at => {
+                req.session.stravaToken = at;
+                res.redirect('/');
+            });
         }, (error) => {
             console.log(error);
             res.send('error');
