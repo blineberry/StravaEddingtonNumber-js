@@ -66,7 +66,7 @@ module.exports = (req, res) => {
             }
         }
 
-        res.render('index.njk', {data});
+        res.render('home.njk', {data});
         return;
     });
 };
