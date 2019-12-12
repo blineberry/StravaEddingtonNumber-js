@@ -3,19 +3,34 @@
 
 {% block body %}
 <div class="h-card">
-  <img class="u-photo" alt="photo of {{ data.firstname }}"
-       src="{{ data.profile }}"/>
-  <div class="p-name">{{ data.firstname }} {{ data.lastname }}</div>
-  <p class="p-sex">{{ data.gender }}</p>
+  <img class="u-photo" alt="photo of {{ athlete.firstname }}"
+       src="{{ athlete.profile }}"/>
+  <div class="p-name">{{ athlete.firstname }} {{ athlete.lastname }}</div>
+  <p class="p-sex">{{ athlete.gender }}</p>
   <p class="p-adr">
-    <span class="p-locality">{{ data.city }}</span>,
-    <span class="p-region">{{ data.state }}</span>,
-    <span class="p-country-name">{{ data.country }}</span>
+    <span class="p-locality">{{ athlete.city }}</span>,
+    <span class="p-region">{{ athlete.state }}</span>,
+    <span class="p-country-name">{{ athlete.country }}</span>
   </p>
 </div>
 
 <form method="POST" action="/deauthorize">
 <input type="submit" value="Deauthorize" />
 </form>
-</form>
+
+<div>
+<p>Total Activities: {{ activities.length }}</p>
+<table>
+<th>Name</th><th>Type</th><th>Distance (m)</th>
+{% for activity in activities %}
+<tr>
+<td>{{ activity.name }}</td>
+<td>{{ activity.type }}</td>
+<td>{{ activity.distance }}</td>
+</tr>
+{% endfor %}
+</table>
+</div>
+
+<pre>{{ activities | dump }}</pre>
 {% endblock %}
