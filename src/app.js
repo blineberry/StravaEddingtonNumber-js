@@ -4,6 +4,9 @@ const session = require('express-session');
 const nunjucks = require('nunjucks');
 const request = require('superagent');
 const data = require('../DAL/data');
+const Strava = require('strava_api_v3');
+const actions = require('../actions');
+const stravaAuth = require('../DAL/stravaAuth');
 
 const app = express();
 const port = process.env.PORT;
@@ -55,98 +58,72 @@ if (process.env.NODE_ENV === "development") {
     sequelize.sync();
 }
 
-app.get('/', (req, res) => {
-    if (req.session.stravaToken) {
-        res.render('index.njk');
+app.use((req, res, next) => {
+    req.data = data;
+    next();
+})
+
+let requireStravaAuth = (req, res, next) => {
+    if (!req.session.stravaToken) {
+        res.redirect('/login');
+        return;
+    }    
+
+    next();
+}
+
+let refreshStravaToken = (req, res, next) => {
+    let utcNow = Date.now();
+
+    if (new Date() < new Date(req.session.stravaToken.expiresAt)) {
+        next();
         return;
     }
 
-    let stravaAuthUrl = `https://www.strava.com/oauth/authorize?client_id=${ process.env.STRAVA_CLIENT_ID }&redirect_uri=${ encodeURIComponent("http://localhost:3000/auth") }&response_type=code&scope=read`;
-    res.render('login.njk', { stravaAuthUrl });
-});
-
-app.get('/auth', (req, res) => {
-    console.log(req);
-
-    let client_id = process.env.STRAVA_CLIENT_ID, 
-        client_secret = process.env.STRAVA_CLIENT_SECRET, 
-        code = req.query.code, 
-        grant_type = "authorization_code";
-
-    request
-        .post('https://www.strava.com/oauth/token')
-        .send({
-            client_id,
-            client_secret,
-            code,
-            grant_type
+    let tokenChangesPromise = data.refreshToken.findByPk(req.session.stravaToken.athleteId)
+        .then(refreshToken => {
+            return stravaAuth.getRefreshedAccessToken(refreshToken.code);
         })
-        .then((response) => {
-            console.log(response);
-            
-            var atCreatePromise = data.accessToken.upsert({
-                athleteId: response.body.athlete.id,
-                scope: req.query.scope,
-                code: response.body.access_token,
-                expiresAt: response.body.expires_at
-            },
-            {
-                returning: true
-            });
-            
-            var rtCreatePromise = data.refreshToken.findOrCreate({
-                where: {
-                    athleteId: response.body.athlete.id,
+        .then(response => {
+            return {
+                accessTokenChanges:{
+                    code: response.body.access_token,
+                    expiresAt: new Date(response.body.expires_at * 1000)
                 },
-                defaults: {
-                    athleteId: response.body.athlete.id,
-                    scope: req.query.scope,
-                    code: response.body.refresh_token,
-                },                
-            });
-
-            Promise.all([atCreatePromise,rtCreatePromise])
-            .then(values => {
-                req.session.stravaToken = values[0][0];
-                res.redirect('/');
-            })
-            .catch(error => {
-                console.log(error);
-                res.send('error');
-            });
-        }, (error) => {
-            console.log(error);
-            res.send('error');
-        })
-        .catch(err => {
-            console.log(err);
-            res.send('error');
+                refreshTokenChanges:{
+                    code: response.body.refresh_token
+                },
+            };
         });
-});
 
-app.post('/deauthorize', (req, res) => {
-    request
-        .post('https://www.strava.com/oauth/deauthorize')
-        .send({
-            access_token: req.session.stravaToken.code
-        })
-        .then((response) => {
-            console.log(response);
-            req.session.destroy(err => {
-                if (err) {
-                    console.log(err);
-                    res.send('error');
-                }
-                res.redirect('/');
-            });
-        }, (error) => {
-            console.log(error);
-            res.send('error');
-        })
-        .catch(err => {
-            console.log(err);
-            res.send('error');
+    let saveTokenPromise = tokenChangesPromise
+        .then(changes => {
+            return req.data.updateTokens(
+                changes.accessTokenChanges, 
+                changes.refreshTokenChanges, 
+                req.session.stravaToken.athleteId
+            );
         });
-});
+
+    Promise.all([tokenChangesPromise, saveTokenPromise])
+        .then(([tokenChangesResult, saveTokenResult]) => {
+            req.session.stravaToken.code = tokenChangesResult.accessTokenChanges.code;
+            req.session.stravaToken.expiresAt = tokenChangesResult.accessTokenChanges.expiresAt;
+            next();
+        });
+};
+
+let stravaApiPrime = (req, res, next) => {
+    Strava.ApiClient.instance.authentications['strava_oauth'].accessToken = req.session.stravaToken.code;
+    req.strava = Strava;
+
+    next();
+}
+
+app.get('/', [requireStravaAuth, refreshStravaToken, stravaApiPrime], actions.home);
+app.get('/login', actions.login);
+app.get('/auth', actions.auth);
+
+app.post('/deauthorize', actions.deauthorize);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
