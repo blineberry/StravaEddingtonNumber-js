@@ -7,7 +7,7 @@ class RefreshToken extends Model {
     super.init({
       // attributes
       athleteId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.BIGINT,
         primaryKey: true,
       },
       scope: {
