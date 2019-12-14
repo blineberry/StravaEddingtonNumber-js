@@ -55,17 +55,20 @@ module.exports = (req, res) => {
             id: athlete.id,
             firstname: athlete.firstname,
             lastname: athlete.lastname,
-            profile: athlete.profile
+            profileImageUrl: athlete.profile
         }
 
-        return req.data.athlete.upsert(appAthlete).then(() => req.data.athlete.findByPk(athlete.id));
+        return req.data.athlete.upsert(appAthlete)
+        .then(() => req.data.athlete.findByPk(athlete.id));
     })
     .then(athlete => {
-        let stravaActivitiesPromise = new Promise((resolve) => resolve());; 
+        let stravaActivitiesPromise = new Promise((resolve) => resolve());
+        let isFetching = athlete.isFetching;
 
         if (!athlete.isFetching) {
+            isFetching = true;
             let tempPromise = req.data.athlete.update({
-                isFetching: true                    
+                isFetching                    
             }, {
                 where: {
                     id: athlete.id,
@@ -86,8 +89,9 @@ module.exports = (req, res) => {
                 }));
             })
             .then(() => {
+                isFetching = false;
                 return req.data.athlete.update({
-                    isFetching: false,
+                    isFetching,
                     activityFetchTime: fetchTime
                 }, {
                     where: {
@@ -97,8 +101,9 @@ module.exports = (req, res) => {
             })
             .catch(error => {
                 console.log(error);
+                isFetching = false;
                 req.data.athlete.update({
-                    isFetching: false,
+                    isFetching,
                     fetchTime: 0
                 }, {
                     where: {
@@ -126,7 +131,7 @@ module.exports = (req, res) => {
             res.render('home.njk', {
                 athlete, 
                 activities, 
-                isFetching: athlete.isFetching
+                isFetching,
             });
         })
         .catch(error => {
