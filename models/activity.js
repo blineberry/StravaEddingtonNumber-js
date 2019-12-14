@@ -2,27 +2,32 @@ const Sequelize = require('sequelize');
 
 const Model = Sequelize.Model;
 
-class RefreshToken extends Model {
+class Activity extends Model {
   static init(sequelize, modelName) {
     super.init({
       // attributes
-      athleteId: {
+      id: {
         type: Sequelize.BIGINT,
         primaryKey: true,
       },
-      scope: {
-        type: Sequelize.STRING
+      athleteId: {
+        type: Sequelize.BIGINT
       },
-      code: {
+      startDate: {
+          type: Sequelize.DATE
+      },
+      distance: {
+          type: Sequelize.INTEGER
+      },
+      type: {
           type: Sequelize.STRING
-      }
-    }, {
+      },
+    }, {  
       sequelize,
       modelName: modelName
       // options
-    })
+    });
   }
 }
 
-
-module.exports = RefreshToken;
+module.exports = Activity;

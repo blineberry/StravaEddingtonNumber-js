@@ -4,14 +4,8 @@
 {% block body %}
 <div class="h-card">
   <img class="u-photo" alt="photo of {{ athlete.firstname }}"
-       src="{{ athlete.profile }}"/>
+       src="{{ athlete.profileImageUrl }}"/>
   <div class="p-name">{{ athlete.firstname }} {{ athlete.lastname }}</div>
-  <p class="p-sex">{{ athlete.gender }}</p>
-  <p class="p-adr">
-    <span class="p-locality">{{ athlete.city }}</span>,
-    <span class="p-region">{{ athlete.state }}</span>,
-    <span class="p-country-name">{{ athlete.country }}</span>
-  </p>
 </div>
 
 <form method="POST" action="/deauthorize">
@@ -19,12 +13,15 @@
 </form>
 
 <div>
+{%if isFetching %}
+<p><strong>Still fetching data. <a href="/">Refresh page in a few seconds see new activities</a>.</strong></p>
+{% endif %}
 <p>Total Activities: {{ activities.length }}</p>
 <table>
-<th>Name</th><th>Type</th><th>Distance (m)</th>
+<th>Date</th><th>Type</th><th>Distance (m)</th>
 {% for activity in activities %}
 <tr>
-<td>{{ activity.name }}</td>
+<td>{{ activity.startDate }}</td>
 <td>{{ activity.type }}</td>
 <td>{{ activity.distance }}</td>
 </tr>

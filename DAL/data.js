@@ -1,13 +1,20 @@
-var AccessToken = require('../models/accessToken');
-var RefreshToken = require('../models/refreshToken');
+const AccessToken = require('../models/accessToken');
+const RefreshToken = require('../models/refreshToken');
+const Athlete = require('../models/athlete');
+const Activity = require('../models/activity');
+
 
 class Data {
     static init(sequelize) {
         AccessToken.init(sequelize,'accessToken');
         RefreshToken.init(sequelize,'refreshToken');
+        Athlete.init(sequelize, 'athlete');
+        Activity.init(sequelize, 'activity');
 
         this.accessToken = AccessToken;
         this.refreshToken = RefreshToken;
+        this.athlete = Athlete;
+        this.activity = Activity;
         this.stravaAuth = require('./stravaAuth');
     }
 

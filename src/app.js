@@ -55,7 +55,7 @@ sequelize.authenticate()
 
 
 if (process.env.NODE_ENV === "development") {
-    sequelize.sync();
+    sequelize.sync({ force: true });
 }
 
 app.use((req, res, next) => {
