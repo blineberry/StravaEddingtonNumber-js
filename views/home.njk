@@ -16,14 +16,13 @@
 {%if isFetching %}
 <p><strong>Still fetching data. <a href="/">Refresh page in a few seconds see new activities</a>.</strong></p>
 {% endif %}
-<p>Total Activities: {{ activities.length }}</p>
+<p>Total Activities: {{ activityCount }}</p>
 <table>
-<th>Date</th><th>Type</th><th>Distance (m)</th>
-{% for activity in activities %}
+<th>Activity Type</th><th>Eddington Number</th>
+{% for number in eddingtonNumbers %}
 <tr>
-<td>{{ activity.startDate }}</td>
-<td>{{ activity.type }}</td>
-<td>{{ activity.distance }}</td>
+<td>{{ number.type }}</td>
+<td>{{ number.eNum }}</td>
 </tr>
 {% endfor %}
 </table>
