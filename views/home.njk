@@ -3,31 +3,34 @@
 {% extends "html.njk" %}
 
 {% block body %}
+
 <div class="h-card athlete">
-  <img class="u-photo" alt="photo of {{ athlete.firstname }}"
+  <img class="u-photo athlete-image" alt="photo of {{ athlete.firstname }}"
        src="{{ athlete.profileImageUrl }}"/>
-  <div class="p-name">{{ athlete.firstname }} {{ athlete.lastname }}</div>
+  <div class="p-name athlete-name">{{ athlete.firstname }} {{ athlete.lastname }}</div>
 </div>
 
 <form method="POST" action="/deauthorize">
 <input type="submit" value="Deauthorize" />
 </form>
 
-<div>
+<div class="eddington">
+<h1>Lifetime Eddington Numbers</h1>
 {%if athlete.isFetching %}
-<p><strong>Still fetching data. <a href="/">Refresh page in a few seconds see new activities</a>.</strong></p>
+<p><strong>Still fetching data. <a href="/">Try refreshing the page in a few seconds</a>. First data fetches can take a while if you have a lot of activities.</strong></p>
 {% endif %}
-<p>Total Activities: {{ activityCount }}</p>
-<table>
-<th>Activity Type</th><th>Eddington Number</th>
-{% for number in eddingtonNumbers %}
-<tr>
-<td>{{ number.type }}</td>
-<td>{{ number.eNum }}</td>
-</tr>
+<p class="eddington-count">Total Activities: {{ activityCount }}</p>
+{% if eddingtonNumbers.length > 0 %}
+<ul class="eddington-list">
+{% for activity in eddingtonNumbers | sort(true, false, 'eNum') %}
+<li class="eddington-list-item">
+<div class="eddington-list-item-type">{{ activity.type }}</div>
+<div class="eddington-list-item-enum">{{ activity.eNum }}</div>
+</li>
 {% endfor %}
-</table>
-</div>
+</ul>
+{% else %}
+<p>No activities found.</p>
+{% endif %}
 
-<pre>{{ activities | dump }}</pre>
 {% endblock %}
