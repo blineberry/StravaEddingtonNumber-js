@@ -1,0 +1,46 @@
+body {
+    font-size: 14px;
+    line-height: 1.5;
+    font-family: sans-serif;
+    color: #333;
+    background-color: #FFF;
+    margin: 0;
+}
+
+h1 {
+    font-size: 1.14em; /* 16px */
+    line-height: 1.31; /* 21px */
+}
+
+.layout-login {
+    padding: 1em;
+}
+
+.layout-home {
+    display: grid;
+}
+
+@media screen and (min-width: 450px) {
+    body {
+        font-size: 18px;
+        line-height: 1.5; /* 27px */
+    }
+
+    h1 { 
+        font-size: 1.16em; /* 21px */
+        line-height: 1.71;
+    }
+
+    .layout-login {
+        display: grid;
+        grid-gap: 0.5em;
+        grid-template-columns: 1fr auto 1fr;
+        grid-template-rows: 0.5em 1fr;
+    }
+
+    .layout-login .intro {
+        grid-column: 2 / 2;
+        grid-row: 2/2;
+        max-width: 31.94em; /* 575px */
+    }
+}

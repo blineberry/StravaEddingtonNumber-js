@@ -66,6 +66,8 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use('/static', express.static('public'));
+
 app.get('/', actions.home);
 app.get('/login', actions.login);
 app.get('/auth', actions.auth);

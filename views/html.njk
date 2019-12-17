@@ -2,8 +2,9 @@
 <html>
 <head>
 <title>{{ title }}</title>
+<link rel="stylesheet" href="/static/style.css" type="text/css">
 </head>
-<body>
+<body class="{{ bodyClasses }}">
 {% block body %}{% endblock %}
 </body>
 </html>

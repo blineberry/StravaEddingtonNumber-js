@@ -1,8 +1,9 @@
 {% set title = "Strava" %}
+{% set bodyClasses = "layout-home" %}
 {% extends "html.njk" %}
 
 {% block body %}
-<div class="h-card">
+<div class="h-card athlete">
   <img class="u-photo" alt="photo of {{ athlete.firstname }}"
        src="{{ athlete.profileImageUrl }}"/>
   <div class="p-name">{{ athlete.firstname }} {{ athlete.lastname }}</div>
