@@ -64,19 +64,24 @@ let loadAthlete = (req, res, next) => {
             return athlete;
         }
 
-        let api = new req.strava.AthletesApi();
-        api.getLoggedInAthlete((error, data, response) => {
-            if (error) {
-                throw error;
-            }
-            
-            return req.appData.db.athlete.create({
-                id: data.id,
-                firstname: data.firstname,
-                lastname: data.lastname,
-                profileImageUrl: data.profile
-            });
-        });        
+        return new Promise((resolve, reject) => {
+            let api = new req.strava.AthletesApi();
+            api.getLoggedInAthlete((error, data, response) => {
+                if (error) {
+                    reject(error);
+                }
+                
+                req.appData.db.athlete.create({
+                    id: data.id,
+                    firstname: data.firstname,
+                    lastname: data.lastname,
+                    profileImageUrl: data.profile
+                }).then(athlete => {
+                    resolve(athlete);
+                });
+            });  
+        });
+              
     })
     .then(athlete => {
         req.appData.athlete = athlete;
