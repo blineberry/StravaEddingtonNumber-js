@@ -57,70 +57,16 @@ sequelize.authenticate()
 if (process.env.NODE_ENV === "development") {
     sequelize.sync({ force: false });
 }
-
 app.use((req, res, next) => {
-    req.data = data;
-    next();
-})
-
-let requireStravaAuth = (req, res, next) => {
-    if (!req.session.stravaToken) {
-        res.redirect('/login');
-        return;
-    }    
-
-    next();
-}
-
-let refreshStravaToken = (req, res, next) => {
-    let utcNow = Date.now();
-
-    if (new Date() < new Date(req.session.stravaToken.expiresAt)) {
-        next();
-        return;
+    if (!req.appData) {
+        req.appData = {};
     }
 
-    let tokenChangesPromise = data.refreshToken.findByPk(req.session.stravaToken.athleteId)
-        .then(refreshToken => {
-            return stravaAuth.getRefreshedAccessToken(refreshToken.code);
-        })
-        .then(response => {
-            return {
-                accessTokenChanges:{
-                    code: response.body.access_token,
-                    expiresAt: new Date(response.body.expires_at * 1000)
-                },
-                refreshTokenChanges:{
-                    code: response.body.refresh_token
-                },
-            };
-        });
-
-    let saveTokenPromise = tokenChangesPromise
-        .then(changes => {
-            return req.data.updateTokens(
-                changes.accessTokenChanges, 
-                changes.refreshTokenChanges, 
-                req.session.stravaToken.athleteId
-            );
-        });
-
-    Promise.all([tokenChangesPromise, saveTokenPromise])
-        .then(([tokenChangesResult, saveTokenResult]) => {
-            req.session.stravaToken.code = tokenChangesResult.accessTokenChanges.code;
-            req.session.stravaToken.expiresAt = tokenChangesResult.accessTokenChanges.expiresAt;
-            next();
-        });
-};
-
-let stravaApiPrime = (req, res, next) => {
-    Strava.ApiClient.instance.authentications['strava_oauth'].accessToken = req.session.stravaToken.code;
-    req.strava = Strava;
-
+    req.appData.db = data;
     next();
-}
+});
 
-app.get('/', [requireStravaAuth, refreshStravaToken, stravaApiPrime], actions.home);
+app.get('/', actions.home);
 app.get('/login', actions.login);
 app.get('/auth', actions.auth);
 
