@@ -1,6 +1,14 @@
 {% set title = "Login" %}
+{% set contentClasses = "layout-login" %}
+
 {% extends "html.njk" %}
 
 {% block body %}
-<a href="{{ stravaAuthUrl }}">Log in with Strava</a>
+<div class="intro">
+    <h1>Calculate Your Eddington Number</h1>
+    <p>Your Eddington Number is the largest number that you have run/biked/etc at least 
+    that many miles on at least that many different days.
+    <p>Connect with Strava to calculate your Eddington Numbers from your activities.</p>
+    <a href="{{ stravaAuthUrl }}" class="strava-connect"><img src="/static/btn_strava_connectwith_orange.svg" alt="Connect with Strava" /></a>
+</div>
 {% endblock %}

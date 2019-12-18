@@ -2,8 +2,16 @@
 <html>
 <head>
 <title>{{ title }}</title>
+<link rel="stylesheet" href="/static/style.css" type="text/css">
 </head>
 <body>
+<div class="content {{ contentClasses }}">
 {% block body %}{% endblock %}
+</div>
+<footer class="footer">
+    <span class="footer-item">v1.0.</span>
+    <span class="footer-item">&copy; 2019 Brent Lineberry.</span>
+    <img class="footer-item footer-strava" src="/static/api_logo_pwrdBy_strava_horiz_gray.svg" alt="Powered by Strava" />
+</footer>
 </body>
 </html>
