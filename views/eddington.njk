@@ -1,0 +1,39 @@
+{% set title = "About the Eddington Number" %}
+{% set contentClasses = "layout-page" %}
+
+{% extends "html.njk" %}
+
+{% block body %}
+<div class="copy">
+    <h1>About the Eddington Number</h1>
+    <p>Your Eddington Number is the largest number that you have run/biked/etc at least 
+    that many miles on at least that many different days.
+    <p>For example, if a runner over the course of a week runs 3, 4, 5, 4, 3, 7, 3 mile days,
+    her counts would look like
+    <ul>
+        <li>3+ mile days: 7
+        <li>4+ mile days: 4
+        <li>5+ mile days: 2
+        <li>6+ mile days: 1
+        <li>7+ mile days: 1
+    </ul>
+    <p>5+, 6+, and 7+ mile days don't meet the criteria. 4+ is the highest number that meets 
+    the criteria, so her Eddington Number for the week is 4.
+    <p>While Eddington Numbers can be calculated for any period of time, they are often thought 
+    of as lifetime numbers.
+    <p>For more about Eddington Numbers, see 
+    <a href="http://www2.lowell.edu/users/jch/mtb/e.html">this article</a> and 
+    <a href="https://en.wikipedia.org/wiki/Arthur_Eddington#Eddington_number_for_cycling">this 
+    section of the Arthur Eddington Wikipedia article</a>.
+    <p>Also check out this other  
+    <a href="https://swinny.net/Strava/-4691-My-Strava-Eddington-Number">Eddington 
+    Calculator</a>.
+{% if isLoggedIn %}
+    <p><a href="/">View your numbers.</a><p>
+{% else %}
+    <p>Calculate yours by connecting with Strava</p>
+    <a href="{{ stravaAuthUrl }}" class="strava-connect">
+    <img src="/static/btn_strava_connectwith_orange.svg" alt="Connect with Strava" /></a>
+{% endif %}
+</div>
+{% endblock %}

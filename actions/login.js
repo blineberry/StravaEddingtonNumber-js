@@ -1,4 +1,14 @@
-module.exports = (req, res) => {
-    let stravaAuthUrl = `https://www.strava.com/oauth/authorize?client_id=${ process.env.STRAVA_CLIENT_ID }&redirect_uri=${ encodeURIComponent( process.env.STRAVA_REDIRECT_DOMAIN + "/auth") }&response_type=code&scope=read,activity:read,activity:read_all`;
-    res.render('login.njk', { stravaAuthUrl });
+let redirectToRootIfLoggedIn = (req, res, next) => {
+    if (req.session.stravaToken) {
+        res.redirect('/');
+        return;
+    }    
+
+    next();
 };
+
+let action = (req, res) => {
+    res.render('login.njk', { stravaAuthUrl: req.appData.db.stravaAuth.connectUrl });
+};
+
+module.exports = [redirectToRootIfLoggedIn, action];

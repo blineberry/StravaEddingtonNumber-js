@@ -71,6 +71,7 @@ app.use('/static', express.static('public'));
 app.get('/', actions.home);
 app.get('/login', actions.login);
 app.get('/auth', actions.auth);
+app.get('/eddington', actions.eddington);
 
 app.post('/deauthorize', actions.deauthorize);
 
