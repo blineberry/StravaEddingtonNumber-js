@@ -14,6 +14,8 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "nunjucks": "^3.2.0",
+    "pg": "^7.15.0",
+    "pg-hstore": "^2.3.3",
     "sequelize": "^5.21.2",
     "strava_api_v3": "github:blineberry/StravaAPIv3-js",
     "superagent": "^5.1.2",
