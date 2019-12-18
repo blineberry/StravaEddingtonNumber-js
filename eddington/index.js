@@ -1,4 +1,4 @@
-let getCountsFromDays = (days) => {
+let getCountsFromDays = (days, includeData = false) => {
     let counts = [];
 
     for (let i = 0; i < days.length; i++) {
@@ -14,20 +14,36 @@ let getCountsFromDays = (days) => {
         }
     }
 
-    return counts;
-};
-
-let getENumFromCounts = (counts) => {
-    for (let i = counts.length; i > 0; i--) {
-        if (counts[i] >= i) {
-            return i;
+    if (includeData) {
+        return {
+            counts,
+            days
         }
     }
 
-    return 0;
+    return counts;
 };
 
-let getDaysFromActivities = (activities) => {
+let getENumFromCounts = (counts, includeData = false) => {
+    let eNum = 0;
+    
+    for (let i = counts.length; i > 0; i--) {
+        if (counts[i] >= i) {
+            eNum = i;
+            break;
+        }
+    }
+
+    if (includeData) {
+        return {
+            eNum,
+            counts
+        };
+    }
+    return eNum;
+};
+
+let getDaysFromActivities = (activities, includeData = false) => {
     let dayIndex = {};
     let days = [];
 
@@ -47,15 +63,35 @@ let getDaysFromActivities = (activities) => {
 
         days[index].distance += activity.distance;
     }
-
+    
+    if (includeData) {
+        return {
+            days,
+            activities
+        }
+    }
     return days;
 };
 
-let getENumFromDays = (days) => {
+let getENumFromDays = (days, includeData = false) => {
+    if (includeData) {
+        let countData = getCountsFromDays(days, includeData);
+        let eNumData = getENumFromCounts(countData.counts, includeData);
+
+        return { ...countData, ...eNumData };
+    }
+
     return getENumFromCounts(getCountsFromDays(days));
 };
 
-let getENumFromActivities = (activities) => {
+let getENumFromActivities = (activities, includeData = false) => {
+    if (includeData) {
+        let daysData = getDaysFromActivities(activities, includeData);
+        let eNumFromDaysData = getENumFromDays(daysData.days, includeData);
+
+        return { ...daysData, ...eNumFromDaysData};
+    }
+
     return getENumFromDays(getDaysFromActivities(activities));
 };
 
