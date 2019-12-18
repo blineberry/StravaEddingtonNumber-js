@@ -1,3 +1,7 @@
+html {
+    height: 100%;
+}
+
 body {
     font-size: 14px;
     line-height: 1.5;
@@ -5,6 +9,13 @@ body {
     color: #333;
     background-color: #FFF;
     margin: 0;
+    height: 100%;
+
+    display: grid;
+    display: grid;
+    grid-gap: 0.5em;
+    grid-template-columns: auto;
+    grid-template-rows: 1fr auto;
 }
 
 h1 {
@@ -12,17 +23,37 @@ h1 {
     line-height: 1.31; /* 21px */
 }
 
+.footer {
+    text-align: center;
+    font-size:  0.85em; /* 12px */
+    line-height: 1.75;
+    display: flex;
+    justify-content: center;
+    padding: 1.16em;
+    color: #888;
+}
+
+.footer-item {
+    margin-right: 0.5em;
+}
+
+.footer-strava {
+    max-height: 1.75em;
+}
+
 .layout-login {
     padding: 1em;
 }
 
-.layout-home {
-    display: grid;
+.strava-connect {
+    display: block;
+    text-align: center;
 }
 
 .athlete {
     padding: 0 1em;
     margin: 1em auto;
+    text-align: center;
 }
 
 .athlete-image {
@@ -31,6 +62,14 @@ h1 {
 
 .athlete-name {
     text-align: center;
+}
+
+.athlete-stravalink:link, 
+.athlete-stravalink:visited, 
+.athlete-stravalink:hover, 
+.athlete-stravalink:active {
+    color: #FC4C02;
+    text-decoration: none;
 }
 
 .eddington {
@@ -90,13 +129,67 @@ h1 {
         grid-template-rows: 0.5em 1fr;
     }
 
+    .layout-home {
+        display: grid;
+        grid-gap: 0.5em;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: 1fr;
+    }
+
     .layout-login .intro {
         grid-column: 2 / 2;
         grid-row: 2/2;
         max-width: 31.94em; /* 575px */
     }
 
+    .athlete {
+        grid-column: 1 / 1;
+        grid-row: 1 / 1;
+    }
+
+    .eddington {
+        grid-column: 2 / 2;
+        grid-row: 1 / 1;
+    }
+
+    .eddington-list {
+        background: transparent;
+    }
+
     .eddington-list {
         display: flex;
+        flex-wrap: wrap;
+        margin: 0;
+        padding: 0;
+        font-size: inherit;
+    }
+
+    .eddington-list-item {
+        padding: 1em 3em; 
+        margin: 0;
+        background: transparent;
+        border: 1px solid #CFCFCF;
+        margin: 0 1em 1em 0;
+        border-radius: 10px;
+    }
+
+    .eddington-list-item {
+        display: block;
+        flex-grow: 1;
+    }
+
+    .eddington-list-item:last-child {
+        margin-bottom: 1em;
+    }
+
+    .eddington-list-item-type::after {
+        content: '';
+        margin: 0;
+    }
+
+    .eddington-list-item-enum {
+        font-size: 4em;
+        text-align: center;
+        font-weight: normal;
     }
 }

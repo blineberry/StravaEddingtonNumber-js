@@ -1,5 +1,5 @@
 {% set title = "Strava" %}
-{% set bodyClasses = "layout-home" %}
+{% set contentClasses = "layout-home" %}
 {% extends "html.njk" %}
 
 {% block body %}
@@ -7,12 +7,13 @@
 <div class="h-card athlete">
   <img class="u-photo athlete-image" alt="photo of {{ athlete.firstname }}"
        src="{{ athlete.profileImageUrl }}"/>
-  <div class="p-name athlete-name">{{ athlete.firstname }} {{ athlete.lastname }}</div>
+  <div><span class="p-name athlete-name">{{ athlete.firstname }} {{ athlete.lastname }}</span> | <a href="{{ athlete.stravaUrl }}" class="u-url athlete-stravalink">View on Strava</a></div>
+  <form method="POST" action="/deauthorize">
+    <input type="submit" value="Deauthorize" />
+  </form>
 </div>
 
-<form method="POST" action="/deauthorize">
-<input type="submit" value="Deauthorize" />
-</form>
+
 
 <div class="eddington">
 <h1>Lifetime Eddington Numbers</h1>
@@ -32,5 +33,6 @@
 {% else %}
 <p>No activities found.</p>
 {% endif %}
+</div>
 
 {% endblock %}

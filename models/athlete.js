@@ -30,6 +30,12 @@ class Athlete extends Model {
               return ((Date.now() / 1000) - this.getDataValue('activityFetchTime')) > 2592000;
           },
       },
+      stravaUrl: {
+        type: Sequelize.VIRTUAL,
+        get() {
+          return `https://www.strava.com/athletes/${ this.getDataValue('id') }`;
+        }
+      },
       profileImageUrl: {
           type: Sequelize.STRING,
       },
