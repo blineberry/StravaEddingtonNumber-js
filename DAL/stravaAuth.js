@@ -28,6 +28,10 @@ module.exports = {
                     accessToken,
                     refreshToken
                 };
+            })
+            .catch(error => {
+                console.log(error);
+                throw error;
             });
     },
     getRefreshedAccessToken: (refreshToken) => {
