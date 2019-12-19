@@ -32,7 +32,13 @@
 <li class="eddington-list-item">
 <div class="eddington-list-item-type">{{ activity.type }}</div>
 <div class="eddington-list-item-enum">{{ activity.eNum }}</div>
-<div class="eddington-list-item-next"><strong>{{ activity.nextENumDelta }} more</strong> day of {{ activity.nextENum }}+ miles to get to {{ activity.nextENum }}</div>
+{% if activity.nextENumDelta === 1 %}
+{% set dayUnit = "day" %}
+{% else %}
+{% set dayUnit = "days" %}
+{% endif %}
+
+<div class="eddington-list-item-next"><strong>{{ activity.nextENumDelta }} more</strong> {{ dayUnit }} of {{ activity.nextENum }}+ miles to get to {{ activity.nextENum }}</div>
 </li>
 {% endfor %}
 </ul>
