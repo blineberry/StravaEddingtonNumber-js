@@ -3,4 +3,6 @@ module.exports = {
     auth: require('./auth'),
     login: require('./login'),
     deauthorize: require('./deauthorize'),
+    eddington: require('./eddington'),
+    logout: require('./logout'),
 }

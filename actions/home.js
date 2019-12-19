@@ -19,14 +19,27 @@ let action = (req, res) => {
 
         for (let i = 0; i < activityTypes.length; i++) {
             let type = activityTypes[i];
+            let eNumData = eddington.getENumFromActivities(activities.filter(a => a.type === type).map(a => {
+                return {
+                    distance: a.distance / 1609.344,
+                    date: a.startDate
+                };
+            }), true);
+
+            let nextENum = eNumData.eNum + 1;
+            let nextENumCount = eNumData.counts[nextENum];
+
+            if (!nextENumCount) {
+                nextENumCount = 0;
+            }
+
             eddingtonNumbers.push({
                 type: type,
-                eNum: eddington.getENumFromActivities(activities.filter(a => a.type === type).map(a => {
-                    return {
-                        distance: a.distance / 1609.344,
-                        date: a.startDate
-                    };
-                })),
+                eNum: eNumData.eNum,
+                eNumCount: eNumData.counts[eNumData.eNum],
+                nextENum,
+                nextENumDelta: nextENum - nextENumCount,
+                count: eNumData.activities.length
             });
         }
 

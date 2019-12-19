@@ -1,13 +1,14 @@
 {% set title = "Login" %}
-{% set contentClasses = "layout-login" %}
+{% set contentClasses = "layout-page" %}
 
 {% extends "html.njk" %}
 
 {% block body %}
-<div class="intro">
+<div class="copy">
     <h1>Calculate Your Eddington Number</h1>
     <p>Your Eddington Number is the largest number that you have run/biked/etc at least 
-    that many miles on at least that many different days.
+    that many miles on at least that many different days. It can be kind of confusing to 
+    explain. <a href="/eddington">Read more here.</a>
     <p>Connect with Strava to calculate your Eddington Numbers from your activities.</p>
     <a href="{{ stravaAuthUrl }}" class="strava-connect"><img src="/static/btn_strava_connectwith_orange.svg" alt="Connect with Strava" /></a>
 </div>
