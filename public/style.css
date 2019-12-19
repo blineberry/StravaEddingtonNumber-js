@@ -23,6 +23,11 @@ h1 {
     line-height: 1.31; /* 21px */
 }
 
+a:link, a:visited, a:hover, a:active {
+    color: inherit;
+    text-decoration: underline;
+}
+
 .footer {
     text-align: center;
     font-size:  0.85em; /* 12px */
@@ -38,7 +43,7 @@ h1 {
 }
 
 .footer-strava {
-    max-height: 1.75em;
+    max-height: 1.5em; /* 18px */
 }
 
 .layout-page {
