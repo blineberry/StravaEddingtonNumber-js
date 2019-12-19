@@ -8,7 +8,9 @@ let redirectToRootIfLoggedIn = (req, res, next) => {
 };
 
 let action = (req, res) => {
-    res.render('login.njk', { stravaAuthUrl: req.appData.db.stravaAuth.connectUrl });
+    let state = req.query.redirect || '/';
+
+    res.render('login.njk', { stravaAuthUrl: req.appData.db.stravaAuth.getConnectUrl(state) });
 };
 
 module.exports = [redirectToRootIfLoggedIn, action];

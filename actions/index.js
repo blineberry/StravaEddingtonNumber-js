@@ -5,4 +5,5 @@ module.exports = {
     deauthorize: require('./deauthorize'),
     eddington: require('./eddington'),
     logout: require('./logout'),
-}
+    account: require('./account'),
+};
