@@ -2,11 +2,10 @@ const express = require('express');
 const Sequelize = require('sequelize');
 const session = require('express-session');
 const nunjucks = require('nunjucks');
-const request = require('superagent');
-const data = require('../DAL/data');
-const Strava = require('strava_api_v3');
-const actions = require('../actions');
-const stravaAuth = require('../DAL/stravaAuth');
+
+const data = require('./DAL/data');
+const actions = require('./actions');
+const dbConfig = require('./dbconfig.js');
 
 const app = express();
 const port = process.env.PORT;
@@ -15,25 +14,7 @@ nunjucks.configure('views', {
     express: app
 });
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
-    dialect: 'mssql',
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    encrypt: true,
-    dialectOptions: { 
-      options: {
-        encrypt: true
-      }
-    },
-    retry: {
-        match: [
-            Sequelize.TimeoutError,
-            Sequelize.ConnectionError,
-            Sequelize.ConnectionTimedOutError
-        ],
-        max: 3
-    }
-});
+const sequelize = new Sequelize(dbConfig.name, dbConfig.user, dbConfig.pass, dbConfig.options);
 
 app.use(session({
     secret: process.env.SESSION_SECRET.split(','),
