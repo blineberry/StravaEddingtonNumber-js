@@ -89,5 +89,6 @@ app.get('/login', actions.login);
 app.get('/auth', actions.auth);
 app.get('/eddington', actions.eddington);
 app.post('/deauthorize', actions.deauthorize);
+app.post('/logout', actions.logout);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

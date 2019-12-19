@@ -72,6 +72,21 @@ h1 {
     text-decoration: none;
 }
 
+.athlete-actions {
+    display: flex;
+    justify-content: center;
+}
+
+.athlete-action {
+    margin-left: 0.5em;
+}
+
+.athlete-action:first-child {
+    margin: 0;
+}
+
+
+
 .eddington {
     padding: 0 1em;
     margin: 1em 0;

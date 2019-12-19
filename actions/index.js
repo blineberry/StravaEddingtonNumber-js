@@ -4,4 +4,5 @@ module.exports = {
     login: require('./login'),
     deauthorize: require('./deauthorize'),
     eddington: require('./eddington'),
+    logout: require('./logout'),
 }

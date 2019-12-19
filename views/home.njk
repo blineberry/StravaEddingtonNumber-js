@@ -1,4 +1,4 @@
-{% set title = "Strava" %}
+{% set title = "Eddington Numbers" %}
 {% set contentClasses = "layout-home" %}
 {% extends "html.njk" %}
 
@@ -8,9 +8,14 @@
   <img class="u-photo athlete-image" alt="photo of {{ athlete.firstname }}"
        src="{{ athlete.profileImageUrl }}"/>
   <div><span class="p-name athlete-name">{{ athlete.firstname }} {{ athlete.lastname }}</span> | <a href="{{ athlete.stravaUrl }}" class="u-url athlete-stravalink">View on Strava</a></div>
-  <form method="POST" action="/deauthorize">
-    <input type="submit" value="Deauthorize" />
-  </form>
+  <div class="athlete-actions">
+    <form class="athlete-action" method="POST" action="/logout">
+      <input type="submit" value="Log out" />
+    </form>
+    <form class="athlete-action" method="POST" action="/deauthorize">
+      <input type="submit" value="Deauthorize" />
+    </form>
+  </div>
 </div>
 
 
