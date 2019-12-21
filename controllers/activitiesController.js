@@ -20,5 +20,30 @@ module.exports = {
                 console.log(err);
                 res.send(err);
             });
+    }],
+    refreshPOST: [requireStravaAuth, refreshStravaToken, loadAthlete, 
+        (req, res) => {
+            let deleteActivitiesPromise = req.appData.db.activity.destroy({
+                where: {
+                    athleteId: req.appData.athlete.id
+                }
+            });
+
+            let resetAthleteFetchTimePromise = req.appData.db.athlete.update({
+                activityFetchTime: 0
+            }, {
+                where: {
+                    id: req.appData.athlete.id
+                }
+            });
+
+            Promise.all([deleteActivitiesPromise,resetAthleteFetchTimePromise])
+            .then(() => {
+                res.redirect('/');
+            })
+            .catch(err => {
+                console.log(err);
+                res.send(err);
+            });
     }]
 };
