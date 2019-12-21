@@ -1,0 +1,39 @@
+{% set title = "Eddington Numbers" %}
+{% set contentClasses = "layout-page" %}
+{% extends "html.njk" %}
+
+{% block body %}
+
+<div class="copy account">
+    <div class="h-card athlete">
+        <img class="u-photo athlete-image" alt="photo of {{ athlete.firstname }}"
+            src="{{ athlete.profileImageUrl }}"/>
+        <div><span class="p-name athlete-name">{{ athlete.firstname }} {{ athlete.lastname }}</span> | <a href="{{ athlete.stravaUrl }}" class="u-url athlete-stravalink">View on Strava</a></div>
+        <ul class="athlete-actions">  
+            <li class="athlete-action">
+                <a href="/">View numbers</a>
+        </ul>
+        <ul class="athlete-actions">  
+            <li class="athlete-action">      
+                <form method="POST" action="/account/logout">
+                    <input type="submit" value="Log out" />
+                </form>  
+            <li class="athlete-action"> 
+                <form method="POST" action="/activities/refresh">
+                    <input type="submit" value="Refresh data" />
+                </form>  
+            <li class="athlete-action"> 
+                <form method="POST" action="/account/deauthorize">
+                    <input type="submit" value="Deauthorize app from Strava" />
+                </form>
+        </ul>
+        <ul class="athlete-actions">  
+            <li class="athlete-action is-destructive">
+                <a href="/activities/delete">Delete activites</a>
+            <li class="athlete-action is-destructive"> 
+                <a href="/account/delete">Delete account</a>
+        </ul>
+    </div>
+</div>
+
+{% endblock %}

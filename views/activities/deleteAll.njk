@@ -1,0 +1,18 @@
+{% set title = "Delete Activities" %}
+{% set contentClasses = "layout-page" %}
+
+{% extends "html.njk" %}
+
+{% block body %}
+<div class="copy">
+    <h1>Delete activites?</h1>
+    <p>Are you sure you want to delete your activities? Only new activites will 
+    be counted from this point forward.
+    <form method="POST">
+        <div class="button-group">
+            <input type="submit" class="btn is-destructive button-group-button" value="Delete activities">
+            <a class="button-group-button" href="/account">Go back to account</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

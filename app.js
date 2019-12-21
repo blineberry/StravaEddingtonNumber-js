@@ -4,7 +4,9 @@ const session = require('express-session');
 const nunjucks = require('nunjucks');
 
 const data = require('./DAL/data');
-const actions = require('./actions');
+const indexRouter = require('./routes/index');
+const accountRouter = require('./routes/account');
+const activitiesRouter = require('./routes/activities');
 const dbConfig = require('./dbconfig.js');
 
 const app = express();
@@ -84,11 +86,8 @@ app.use((req, res, next) => {
 // serve static files
 app.use('/static', express.static('public'));
 
-app.get('/', actions.home);
-app.get('/login', actions.login);
-app.get('/auth', actions.auth);
-app.get('/eddington', actions.eddington);
-app.post('/deauthorize', actions.deauthorize);
-app.post('/logout', actions.logout);
+app.use('/', indexRouter);
+app.use('/account', accountRouter);
+app.use('/activities', activitiesRouter);
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
