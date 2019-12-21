@@ -12,7 +12,7 @@ module.exports = {
         return `https://www.strava.com/oauth/authorize?client_id=${ 
             process.env.STRAVA_CLIENT_ID 
         }&redirect_uri=${ 
-            encodeURIComponent(process.env.STRAVA_REDIRECT_DOMAIN + "/auth") 
+            encodeURIComponent(process.env.STRAVA_REDIRECT_DOMAIN + "/account/auth") 
         }&response_type=code&scope=read,activity:read,activity:read_all${ 
             statePiece
         }`;
