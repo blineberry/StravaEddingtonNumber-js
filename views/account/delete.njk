@@ -1,0 +1,18 @@
+{% set title = "Delete Account" %}
+{% set contentClasses = "layout-page" %}
+
+{% extends "html.njk" %}
+
+{% block body %}
+<div class="copy">
+    <h1>Delete account?</h1>
+    <p>Are you sure you want to delete your account? All athlete and activity data 
+    will be deleted and this app will be deauthorized from Strava.
+    <form method="POST">
+        <div class="button-group">
+            <input type="submit" class="btn is-destructive button-group-button" value="Delete account">
+            <a class="button-group-button" href="/account">Go back to account</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

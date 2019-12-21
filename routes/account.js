@@ -1,12 +1,15 @@
 let express = require('express');
 let router = express.Router();
 
-let actions = require('../actions');
+let controller = require('../controllers/accountController');
 
-router.get('/', actions.account);
-router.get('/login', actions.login);
-router.get('/auth', actions.auth);
-router.post('/deauthorize', actions.deauthorize);
-router.post('/logout', actions.logout);
+router.get('/', controller.indexGET);
+router.get('/login', controller.loginGET);
+router.get('/auth', controller.authGET);
+router.post('/deauthorize', controller.deauthorizePOST);
+router.post('/logout', controller.logoutPOST);
+router.route('/delete')
+    .get(controller.deleteGET)
+    .post(controller.deletePOST);
 
 module.exports = router;
