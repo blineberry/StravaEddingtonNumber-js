@@ -6,9 +6,9 @@ module.exports = (req, res, next) => {
         return;
     }
 
-    let tokenChangesPromise = data.refreshToken.findByPk(req.session.stravaToken.athleteId)
+    let tokenChangesPromise = req.appData.db.refreshToken.findByPk(req.session.stravaToken.athleteId)
         .then(refreshToken => {
-            return stravaAuth.getRefreshedAccessToken(refreshToken.code);
+            return req.appData.db.stravaAuth.getRefreshedAccessToken(refreshToken.code);
         })
         .then(response => {
             return {
@@ -36,5 +36,9 @@ module.exports = (req, res, next) => {
             req.session.stravaToken.code = tokenChangesResult.accessTokenChanges.code;
             req.session.stravaToken.expiresAt = tokenChangesResult.accessTokenChanges.expiresAt;
             next();
+        })
+        .catch(err => {
+            console.log(err);
+            res.send('error');
         });
 };
