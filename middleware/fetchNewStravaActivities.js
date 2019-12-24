@@ -58,15 +58,22 @@ module.exports = (req, res, next) => {
                     startDate: a.startDate,
                     distance: a.distance,
                     type: a.type
-                }
+                };
             }));
         })
-        .then(() => {
+        .then(activities => {
             athlete.isFetching = false;
-            return req.appData.db.athlete.update({
-                isFetching: athlete.isFetching,
-                activityFetchTime: fetchTime
-            }, {
+
+            let updateFields = {
+                isFetching: athlete.isFetching
+            };
+
+            if (activities.length > 0) {
+                let lastFetchedActivityTimes = activities.map(a => new Date(a.startDate).getTime() / 1000).sort((a,b) => b - a);
+                updateFields.activityFetchTime = lastFetchedActivityTimes[0];
+            }
+
+            return req.appData.db.athlete.update(updateFields, {
                 where: {
                     id: athlete.id
                 }
