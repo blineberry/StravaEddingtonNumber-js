@@ -14,6 +14,16 @@ module.exports = {
                 }
             })
             .then(() => {
+                return req.appData.db.athlete.update({
+                    isFetching: false
+                },
+                {
+                    where: {
+                        id: req.appData.athlete.id
+                    }
+                });
+            })
+            .then(() => {
                 res.redirect('/account');
             })
             .catch(err => {
