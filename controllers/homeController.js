@@ -43,7 +43,7 @@ let indexGET = (req, res) => {
             });
         }
 
-        res.render('home.njk', {
+        res.render('home/home.njk', {
             athlete: req.appData.athlete,
             eddingtonNumbers,
             activityCount: activities.length,
@@ -64,9 +64,12 @@ module.exports = {
         indexGET
     ],
     eddingtonGET: [(req, res) => {
-        res.render('eddington.njk', { 
+        res.render('home/eddington.njk', { 
             stravaAuthUrl: req.appData.db.stravaAuth.getConnectUrl(), 
             isLoggedIn: !!req.session.stravaToken
         });
+    }],
+    dataGET: [(req, res) => {
+        res.render('home/data.njk');
     }],
 };
