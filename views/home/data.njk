@@ -1,0 +1,27 @@
+{% set title = "Data Disclosure" %}
+{% set contentClasses = "layout-page" %}
+
+{% extends "html.njk" %}
+
+{% block body %}
+<div class="copy">
+    <h1>What Happens with Your Data</h1>
+    <p>On your permission, this app collects your name, id, profile image URL, and activities 
+    from Strava. Your name and profile image URL are collected to personalize the numbers page to 
+    you. Your Strava id is used to construct a link back to your Strava profile and match your 
+    activities to you. Your activities are used to calculate your Eddington Numbers for each 
+    activity type. These are saved by the application to reduce the number of API calls the 
+    application makes to Strava and to increase application performance. Initial data fetches can 
+    take several seconds for large amounts of activities. After the initial fetch, the application 
+    only fetches new activities.
+
+    <p>The data is stored until you delete it or the application no longer exists.
+
+    <p>You may delete your activity data, delete your account, and/or deauthorize this application 
+    from Strava at any time by visiting your <a href="/account">account</a>.
+
+    <p>European citizens have the right to lodge a complaint with their GDPR supervisory authority.
+
+    <p>Contact <a href="https://twitter.com/BrentLineberry">Brent Lineberry</a> with any questions.
+</div>
+{% endblock %}

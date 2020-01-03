@@ -5,7 +5,7 @@ const loadAthlete = require('../middleware/loadAthlete');
 const fetchNewStravaActivities = require('../middleware/fetchNewStravaActivities');
 const eddington = require('../eddington');
 
-let action = (req, res) => {
+let indexGET = (req, res) => {
     req.appData.db.activity.findAll({
         where: {
             athleteId: req.appData.athlete.id
@@ -43,7 +43,7 @@ let action = (req, res) => {
             });
         }
 
-        res.render('home.njk', {
+        res.render('home/home.njk', {
             athlete: req.appData.athlete,
             eddingtonNumbers,
             activityCount: activities.length,
@@ -55,10 +55,21 @@ let action = (req, res) => {
     });
 };
 
-module.exports = [
-    requireStravaAuth, 
-    refreshStravaToken, 
-    primeStravaApi, 
-    loadAthlete,
-    fetchNewStravaActivities,
-    action];
+module.exports = {
+    indexGET: [requireStravaAuth, 
+        refreshStravaToken, 
+        primeStravaApi, 
+        loadAthlete,
+        fetchNewStravaActivities,
+        indexGET
+    ],
+    eddingtonGET: [(req, res) => {
+        res.render('home/eddington.njk', { 
+            stravaAuthUrl: req.appData.db.stravaAuth.getConnectUrl(), 
+            isLoggedIn: !!req.session.stravaToken
+        });
+    }],
+    dataGET: [(req, res) => {
+        res.render('home/data.njk');
+    }],
+};

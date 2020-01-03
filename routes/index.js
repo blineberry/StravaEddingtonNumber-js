@@ -1,9 +1,10 @@
 let express = require('express');
 let router = express.Router();
 
-let actions = require('../actions');
+let homeController = require('../controllers/homeController');
 
-router.get('/', actions.home);
-router.get('/eddington', actions.eddington);
+router.get('/', homeController.indexGET);
+router.get('/eddington', homeController.eddingtonGET);
+router.get('/data', homeController.dataGET);
 
 module.exports = router;

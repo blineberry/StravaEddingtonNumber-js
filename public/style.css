@@ -49,6 +49,7 @@ a:link, a:visited, a:hover, a:active {
     justify-content: center;
     padding: 1.16em;
     color: #888;
+    align-items: center;
 }
 
 .footer-item {
