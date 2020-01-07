@@ -77,6 +77,8 @@ a:link, a:visited, a:hover, a:active {
 
 .athlete-image {
     border-radius: 50%;
+    width: auto;
+    max-height: 10.5em;
 }
 
 .athlete-name {
