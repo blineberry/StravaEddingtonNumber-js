@@ -25,4 +25,22 @@ class RefreshToken extends Model {
 }
 
 
-module.exports = RefreshToken;
+module.exports = (sequelize, DataTypes) => {
+  const RefreshToken = sequelize.define('RefreshToken', {
+    // attributes
+    athleteId: {
+      type: DataTypes.BIGINT,
+      primaryKey: true,
+    },
+    scope: {
+      type: DataTypes.STRING
+    },
+    code: {
+        type: DataTypes.STRING
+    }
+  }, {});
+  RefreshToken.associate = function(models) {
+    // associations can be defined here
+  };
+  return RefreshToken;
+};

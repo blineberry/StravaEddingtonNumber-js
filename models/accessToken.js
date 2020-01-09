@@ -27,4 +27,25 @@ class AccessToken extends Model {
   }
 }
 
-module.exports = AccessToken;
+module.exports = (sequelize, DataTypes) => {
+  const AccessToken = sequelize.define('AccessToken', {
+    // attributes
+    athleteId: {
+      type: DataTypes.BIGINT,
+      primaryKey: true,
+    },
+    scope: {
+      type: DataTypes.STRING
+    },
+    code: {
+        type: DataTypes.STRING
+    },
+    expiresAt: {
+        type: DataTypes.DATE
+    }
+  }, {});
+  AccessToken.associate = function(models) {
+    // associations can be defined here
+  };
+  return AccessToken;
+};

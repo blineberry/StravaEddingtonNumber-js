@@ -48,9 +48,9 @@ app.use(session({
 let dbInitialized = false;
 
 // initialize db
-const sequelize = new Sequelize(dbConfig.name, dbConfig.user, dbConfig.pass, dbConfig.options);
-data.init(sequelize);
-sequelize.authenticate()
+const db = require('./models');// new Sequelize(dbConfig.name, dbConfig.user, dbConfig.pass, dbConfig.options);
+data.init(db);
+db.sequelize.authenticate()
 .then(() => {
     console.log('Connected');     
     dbInitialized = true;   
@@ -70,7 +70,7 @@ app.use((req,res,next) => {
 });
 
 if (process.env.NODE_ENV === "development") {
-    sequelize.sync({ force: false });
+    db.sequelize.sync({ force: false });
 }
 
 // get the db into the pipeline

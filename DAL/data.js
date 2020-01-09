@@ -5,16 +5,16 @@ const Activity = require('../models/activity');
 
 
 class Data {
-    static init(sequelize) {
-        AccessToken.init(sequelize,'accessToken');
-        RefreshToken.init(sequelize,'refreshToken');
-        Athlete.init(sequelize, 'athlete');
-        Activity.init(sequelize, 'activity');
+    static init(db) {
+        //AccessToken.init(sequelize,'accessToken');
+        //RefreshToken.init(sequelize,'refreshToken');
+        //Athlete.init(sequelize, 'athlete');
+        //Activity.init(sequelize, 'activity');
 
-        this.accessToken = AccessToken;
-        this.refreshToken = RefreshToken;
-        this.athlete = Athlete;
-        this.activity = Activity;
+        this.accessToken = db.sequelize.models.AccessToken;
+        this.refreshToken = db.sequelize.models.RefreshToken;
+        this.athlete = db.sequelize.models.Athlete;
+        this.activity = db.sequelize.models.Activity;
         this.stravaAuth = require('./stravaAuth');
     }
 

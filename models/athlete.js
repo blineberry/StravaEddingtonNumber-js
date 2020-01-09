@@ -47,4 +47,45 @@ class Athlete extends Model {
   }
 }
 
-module.exports = Athlete;
+module.exports = (sequelize, DataTypes) => {
+  const Athlete = sequelize.define('Athlete', {
+    // attributes
+    id: {
+      type: DataTypes.BIGINT,
+      primaryKey: true,
+    },
+    firstname: {
+      type: DataTypes.STRING
+    },
+    lastname: {
+        type: DataTypes.STRING
+    },
+    activityFetchTime: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
+    },
+    isFetching: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    isFetchTimeTooLong: {
+        type: DataTypes.VIRTUAL,
+        get() {
+            return ((Date.now() / 1000) - this.getDataValue('activityFetchTime')) > 2592000;
+        },
+    },
+    stravaUrl: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return `https://www.strava.com/athletes/${ this.getDataValue('id') }`;
+      }
+    },
+    profileImageUrl: {
+        type: DataTypes.STRING,
+    },
+  }, {});
+  Athlete.associate = function(models) {
+    // associations can be defined here
+  };
+  return Athlete;
+};
