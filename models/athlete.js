@@ -83,6 +83,10 @@ module.exports = (sequelize, DataTypes) => {
     profileImageUrl: {
         type: DataTypes.STRING,
     },
+    isPublic: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
   }, {});
   Athlete.associate = function(models) {
     // associations can be defined here

@@ -13,6 +13,7 @@
     "sequelize-cli": "^5.5.1"
   },
   "dependencies": {
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "nunjucks": "^3.2.0",
