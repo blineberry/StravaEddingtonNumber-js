@@ -59,9 +59,11 @@ module.exports = {
     indexGET: [requireStravaAuth, 
         refreshStravaToken, 
         primeStravaApi, 
-        loadAthlete,
-        fetchNewStravaActivities,
-        indexGET
+        //loadAthlete,
+        //fetchNewStravaActivities,
+        (req ,res ) => {
+            return res.redirect(`/athletes/${ req.session.stravaToken.athleteId }`);
+        }
     ],
     eddingtonGET: [(req, res) => {
         res.render('home/eddington.njk', { 

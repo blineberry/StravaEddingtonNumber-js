@@ -1,11 +1,9 @@
 let express = require('express');
 let router = express.Router();
 
-let athletesController = require('../controllers/accountController');
+let athletesController = require('../controllers/athletesController');
 
-router.route('/delete')
-    .get(athletesController.deleteGET)
-    .post(athletesController.deletePOST);
-
+router.route('/:id')
+    .get(athletesController.detailsGET);
 
 module.exports = router;

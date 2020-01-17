@@ -1,4 +1,8 @@
 module.exports = (req, res, next) => {
+    if (!req.session.stravaToken) {
+        return next();
+    }
+
     let utcNow = Date.now();
 
     if (new Date() < new Date(req.session.stravaToken.expiresAt)) {

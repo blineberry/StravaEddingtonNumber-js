@@ -1,7 +1,7 @@
 const requireStravaAuth = require('../middleware/requireStravaAuth');
 const refreshStravaToken = require('../middleware/refreshStravaToken');
 const primeStravaApi = require('../middleware/primeStravaApi');
-const loadAthlete = require('../middleware/loadAthlete');
+const loadLoggedInAthlete = require('../middleware/loadLoggedInAthlete');
 let stravaAuth = require('../DAL/stravaAuth');
 const request = require('superagent');
 
@@ -39,10 +39,9 @@ module.exports = {
     indexGET: [
         requireStravaAuth, 
         refreshStravaToken, 
-        primeStravaApi, 
-        loadAthlete,
+        loadLoggedInAthlete,
         (req, res) => {
-            return res.render('account/index.njk', { athlete: req.appData.athlete });
+            return res.render('account/index.njk', { athlete: req.appData.loggedInAthlete });
         }
     ],
 
@@ -91,29 +90,29 @@ module.exports = {
         res.render('account/delete.njk');
     }],
 
-    deletePOST: [requireStravaAuth, refreshStravaToken, loadAthlete, 
+    deletePOST: [requireStravaAuth, refreshStravaToken, loadLoggedInAthlete, 
         (req, res) => {
             let activitiesDeletePromise = req.appData.db.activity.destroy({
                 where: {
-                    athleteId: req.appData.athlete.id
+                    athleteId: req.appData.loggedInAthlete.id
                 }
             });
 
             let athleteDeletePromise = req.appData.db.athlete.destroy({
                 where: {
-                    id: req.appData.athlete.id
+                    id: req.appData.loggedInAthlete.id
                 }
             });
 
             let accessDeletePromise = req.appData.db.accessToken.destroy({
                 where: {
-                    athleteId: req.appData.athlete.id
+                    athleteId: req.appData.loggedInAthlete.id
                 }
             });
 
             let refreshDeletePromise = req.appData.db.refreshToken.destroy({
                 where: {
-                    athleteId: req.appData.athlete.id
+                    athleteId: req.appData.loggedInAthlete.id
                 }
             });
 

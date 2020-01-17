@@ -1,5 +1,11 @@
 module.exports = (req, res, next) => {
-    return req.appData.db.athlete.findByPk(req.params.id)
+    req.appData.loggedInAthlete = null;
+    
+    if (!req.session || !req.session.stravaToken) {
+        return next();
+    }
+
+    req.appData.db.athlete.findByPk(req.session.stravaToken.athleteId)
     .then(athlete => {
         if (athlete) {
             return athlete;
@@ -17,20 +23,18 @@ module.exports = (req, res, next) => {
                     firstname: data.firstname,
                     lastname: data.lastname,
                     profileImageUrl: data.profile
-                }).then(athlete => {
+                })
+                .then(athlete => {
                     resolve(athlete);
-                });
+                })
+                .catch(next);
             });  
         });
-              
     })
     .then(athlete => {
-        req.appData.athlete = athlete;
+        req.appData.loggedInAthlete = athlete;
         next();
-        return athlete;
+        return;    
     })
-    .catch(error => {
-        res.send(error);
-        console.log(error);
-    });    
+    .catch(next);
 };
