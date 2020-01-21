@@ -1,10 +1,4 @@
-const requireStravaAuth = require('../middleware/requireStravaAuth');
-const refreshStravaToken = require('../middleware/refreshStravaToken');
-const primeStravaApi = require('../middleware/primeStravaApi');
-const loadAthlete = require('../middleware/loadAthlete');
-const fetchNewStravaActivities = require('../middleware/fetchNewStravaActivities');
 const eddington = require('../eddington');
-const requireLoggedInAthleteOrPublicProfile = require('../middleware/requireLoggedInAthleteOrPublicProfile');
 const loadLoggedInAthlete = require('../middleware/loadLoggedInAthlete');
 
 let handleLoggedInAthlete = (req, res, next) => {
@@ -86,6 +80,7 @@ module.exports = {
             .then(athlete => {
                 req.appData.requestedAthlete = athlete;
                 next();
+                return athlete;
             })
             .catch(next);
         },        
@@ -149,7 +144,8 @@ module.exports = {
                 res.render('athletes/details.njk', {
                     athlete: req.appData.requestedAthlete,
                     ...values,
-                    isLoggedInAthlete
+                    isLoggedInAthlete,
+                    isLoggedIn: req.appData.isLoggedIn,
                 });
             })
             .catch(next);

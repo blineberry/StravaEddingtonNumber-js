@@ -3,7 +3,6 @@ if (typeof process.env.NODE_ENV === 'undefined') {
 }
 
 const express = require('express');
-const Sequelize = require('sequelize');
 const session = require('express-session');
 const nunjucks = require('nunjucks');
 
@@ -12,7 +11,7 @@ const indexRouter = require('./routes/index');
 const accountRouter = require('./routes/account');
 const activitiesRouter = require('./routes/activities');
 const athletesRouter = require('./routes/athletes');
-const dbConfig = require('./dbconfig.js');
+const isLoggedIn = require('./middleware/isLoggedIn');
 
 const app = express();
 const port = process.env.PORT;
@@ -87,6 +86,8 @@ app.use((req, res, next) => {
     req.appData.db = data;
     next();
 });
+
+app.use(isLoggedIn);
 
 // serve static files
 app.use('/static', express.static('public'));

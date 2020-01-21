@@ -1,6 +1,6 @@
 {% set title = "Eddington Numbers" %}
 {% set contentClasses = "layout-home" %}
-{% extends "html.njk" %}
+{% extends "withHeader.njk" %}
 
 {% block body %}
 
@@ -8,9 +8,6 @@
   <img class="u-photo athlete-image" alt="photo of {{ athlete.firstname }}"
        src="{{ athlete.profileImageUrl }}"/>
   <div><span class="p-name athlete-name">{{ athlete.firstname }} {{ athlete.lastname }}</span> | <a href="{{ athlete.stravaUrl }}" class="u-url athlete-stravalink">View on Strava</a></div>
-  {% if isLoggedInAthlete %}
-  <div><a href="/account">Settings</a></div>
-  {% endif %}
 </div>
 
 

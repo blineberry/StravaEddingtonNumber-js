@@ -14,7 +14,7 @@ body {
     display: grid;
     grid-gap: 0.5em;
     grid-template-columns: auto;
-    grid-template-rows: 1fr auto;
+    grid-template-rows: auto 1fr auto;
 }
 
 h1 {
@@ -39,6 +39,18 @@ a:link, a:visited, a:hover, a:active {
 .btn.is-destructive {
     background: red;
     color: white;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 1em;
+}
+
+.header a {
+    text-decoration: none;
+    font-size: 0.85em;
+    font-weight: bold;
 }
 
 .footer {

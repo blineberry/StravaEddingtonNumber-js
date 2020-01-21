@@ -41,7 +41,10 @@ module.exports = {
         refreshStravaToken, 
         loadLoggedInAthlete,
         (req, res) => {
-            return res.render('account/index.njk', { athlete: req.appData.loggedInAthlete });
+            return res.render('account/index.njk', { 
+                athlete: req.appData.loggedInAthlete,
+                isLoggedIn: req.appData.isLoggedIn
+            });
         }
     ],
 
@@ -87,7 +90,9 @@ module.exports = {
     },    
 
     deleteGET: [requireStravaAuth, (req, res) => {
-        res.render('account/delete.njk');
+        res.render('account/delete.njk', {
+            isLoggedIn: req.appData.isLoggedIn
+        });
     }],
 
     deletePOST: [requireStravaAuth, refreshStravaToken, loadLoggedInAthlete, 

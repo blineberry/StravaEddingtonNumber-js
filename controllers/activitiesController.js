@@ -4,7 +4,9 @@ const loadAthlete = require('../middleware/loadAthlete');
 
 module.exports = {
     deleteAllGET: [requireStravaAuth, (req, res) => {
-        res.render('activities/deleteAll.njk');
+        res.render('activities/deleteAll.njk',{
+            isLoggedIn: req.appData.isLoggedIn
+        });
     }],
     deleteAllPOST: [requireStravaAuth, refreshStravaToken, loadAthlete, 
         (req, res) => {

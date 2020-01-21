@@ -1,66 +1,12 @@
 const requireStravaAuth = require('../middleware/requireStravaAuth');
 const refreshStravaToken = require('../middleware/refreshStravaToken');
 const primeStravaApi = require('../middleware/primeStravaApi');
-const loadAthlete = require('../middleware/loadAthlete');
-const fetchNewStravaActivities = require('../middleware/fetchNewStravaActivities');
 const eddington = require('../eddington');
-
-let indexGET = (req, res) => {
-    req.appData.db.activity.findAll({
-        where: {
-            athleteId: req.appData.athlete.id
-        }
-    })
-    .then(activities => {
-        let activityTypes = activities.map(a => a.type).filter((v,i,a) => {
-            return i === a.indexOf(v);
-        });
-        let eddingtonNumbers = [];
-
-        for (let i = 0; i < activityTypes.length; i++) {
-            let type = activityTypes[i];
-            let eNumData = eddington.getENumFromActivities(activities.filter(a => a.type === type).map(a => {
-                return {
-                    distance: a.distance / 1609.344,
-                    date: a.startDate
-                };
-            }), true);
-
-            let nextENum = eNumData.eNum + 1;
-            let nextENumCount = eNumData.counts[nextENum];
-
-            if (!nextENumCount) {
-                nextENumCount = 0;
-            }
-
-            eddingtonNumbers.push({
-                type: type,
-                eNum: eNumData.eNum,
-                eNumCount: eNumData.counts[eNumData.eNum],
-                nextENum,
-                nextENumDelta: nextENum - nextENumCount,
-                count: eNumData.activities.length
-            });
-        }
-
-        res.render('home/home.njk', {
-            athlete: req.appData.athlete,
-            eddingtonNumbers,
-            activityCount: activities.length,
-        });
-    })
-    .catch(error => {
-        console.log(error);
-        res.send('error');
-    });
-};
 
 module.exports = {
     indexGET: [requireStravaAuth, 
         refreshStravaToken, 
         primeStravaApi, 
-        //loadAthlete,
-        //fetchNewStravaActivities,
         (req ,res ) => {
             return res.redirect(`/athletes/${ req.session.stravaToken.athleteId }`);
         }
@@ -68,10 +14,12 @@ module.exports = {
     eddingtonGET: [(req, res) => {
         res.render('home/eddington.njk', { 
             stravaAuthUrl: req.appData.db.stravaAuth.getConnectUrl(), 
-            isLoggedIn: !!req.session.stravaToken
+            isLoggedIn: req.appData.isLoggedIn
         });
     }],
     dataGET: [(req, res) => {
-        res.render('home/data.njk');
+        res.render('home/data.njk', {
+            isLoggedIn: req.appData.isLoggedIn
+        });
     }],
 };

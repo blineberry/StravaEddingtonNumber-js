@@ -5,7 +5,7 @@ module.exports = (req, res, next) => {
         return next();
     }
 
-    req.appData.db.athlete.findByPk(req.session.stravaToken.athleteId)
+    return req.appData.db.athlete.findByPk(req.session.stravaToken.athleteId)
     .then(athlete => {
         if (athlete) {
             return athlete;
@@ -16,6 +16,7 @@ module.exports = (req, res, next) => {
             api.getLoggedInAthlete((error, data, response) => {
                 if (error) {
                     reject(error);
+                    return;
                 }
                 
                 req.appData.db.athlete.create({
@@ -34,7 +35,7 @@ module.exports = (req, res, next) => {
     .then(athlete => {
         req.appData.loggedInAthlete = athlete;
         next();
-        return;    
+        return athlete;    
     })
     .catch(next);
 };

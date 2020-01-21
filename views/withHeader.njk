@@ -1,0 +1,14 @@
+{% extends "html.njk" %}
+
+{% block header %}
+
+<header class="header">
+    <a href="/">Eddington Numbers</a>
+    {% if isLoggedIn %}
+    <a href="/account">Account</a>
+    {% else %}
+    <a href="/">Log in</a>
+    {% endif %}
+</header>
+
+{% endblock %}
