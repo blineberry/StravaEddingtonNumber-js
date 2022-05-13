@@ -1,6 +1,8 @@
 const express = require('express');
 const Sequelize = require('sequelize');
 const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
+const { createClient } = require('redis');
 const nunjucks = require('nunjucks');
 
 const data = require('./DAL/data');
@@ -36,13 +38,17 @@ app.use((req, res, next) => {
     return res.status(403).send('HTTPS Required');
 });
 
+let redisClient = createClient({ legacyMode: true });
+redisClient.connect().catch(console.error);
+
 // setup session
 app.use(session({
+    store: new RedisStore({ client: redisClient }),
+    saveUninitialized: false,
     secret: process.env.SESSION_SECRET.split(','),
-    secure: process.env.NODE_ENV === "development" ? false : true,
-    name: 'connect.sid.strava',
+    //secure: process.env.NODE_ENV === "development" ? false : true,
+    //name: 'connect.sid.strava',
     resave: false,
-    saveUninitialized: false
 }));
 
 let dbInitialized = false;
