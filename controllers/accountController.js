@@ -58,6 +58,9 @@ module.exports = {
         stravaAuth.exchangeAuthorizationCodeForTokensAsync(req.query.code, req.query.scope)
         .then(req.appData.db.saveTokens)
         .then(saveTokenResult => {
+            // if a fresh login, note in the session to update the athlete in loadAthlete
+            req.session.updateAthlete = true;
+            // put the accessToken in the session
             req.session.stravaToken = saveTokenResult.tokens.accessToken;
             res.redirect(redirect);
         });

@@ -38,18 +38,31 @@ app.use((req, res, next) => {
     return res.status(403).send('HTTPS Required');
 });
 
-let redisClient = createClient({ legacyMode: true });
-redisClient.connect().catch(console.error);
+
+// If development, use the in-memory session store
+let sessionConfig = {
+    secret: process.env.SESSION_SECRET.split(',')
+};
+
+// In prod, use redis
+if (process.env.NODE_ENV !== "development") {
+    let redisClient = createClient({ legacyMode: true });
+    redisClient.connect().catch(console.error);
+
+    console.log(redisClient);
+
+    sessionConfig = {
+        store: new RedisStore({ client: redisClient }),
+        saveUninitialized: false,
+        secret: process.env.SESSION_SECRET.split(','),
+        //secure: process.env.NODE_ENV === "development" ? false : true,
+        //name: 'connect.sid.strava',
+        resave: false,
+    };
+}
 
 // setup session
-app.use(session({
-    store: new RedisStore({ client: redisClient }),
-    saveUninitialized: false,
-    secret: process.env.SESSION_SECRET.split(','),
-    //secure: process.env.NODE_ENV === "development" ? false : true,
-    //name: 'connect.sid.strava',
-    resave: false,
-}));
+app.use(session(sessionConfig));
 
 let dbInitialized = false;
 

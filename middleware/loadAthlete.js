@@ -1,7 +1,7 @@
 module.exports = (req, res, next) => {
     return req.appData.db.athlete.findByPk(req.session.stravaToken.athleteId)
     .then(athlete => {
-        if (athlete) {
+        if (athlete && !req.session.updateAthlete) {
             return athlete;
         }
 
@@ -12,15 +12,21 @@ module.exports = (req, res, next) => {
                     reject(error);
                 }
                 
-                req.appData.db.athlete.create({
+                // From Sequelize docs: Signature for this method has been 
+                // changed to Promise<Model,boolean | null>. First index 
+                // contains upserted instance, second index contains a boolean 
+                // (or null) indicating if record was created or updated. For 
+                // SQLite/Postgres, created value will always be null.
+                req.appData.db.athlete.upsert({
                     id: data.id,
                     firstname: data.firstname,
                     lastname: data.lastname,
                     profileImageUrl: data.profile
-                }).then(athlete => {
-                    resolve(athlete);
+                }).then(response => {
+                    req.session.updateAthlete = false;
+                    resolve(response[0]);
                 });
-            });  
+            });
         });
               
     })
