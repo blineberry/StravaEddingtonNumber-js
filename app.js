@@ -44,7 +44,8 @@ let sessionConfig = {
     secret: process.env.SESSION_SECRET.split(',')
 };
 
-// In prod, use redis
+// Can't get redis to work in prod, so keep using in-memory store.
+/*
 if (process.env.NODE_ENV !== "development") {
     let redisClient = createClient({ legacyMode: true });
     redisClient.connect().catch(console.error);
@@ -59,7 +60,7 @@ if (process.env.NODE_ENV !== "development") {
         //name: 'connect.sid.strava',
         resave: false,
     };
-}
+}*/
 
 // setup session
 app.use(session(sessionConfig));
