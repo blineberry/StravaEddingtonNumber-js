@@ -5,15 +5,13 @@ dev = {
     user: process.env.DB_USER,
     pass: process.env.DB_PASS,
     options: {
-        dialect: 'mssql',
+        dialect: 'postgres',
+        protocol: 'postgres',
         host: process.env.DB_HOST,
-        port: process.env.DB_PORT,
-        encrypt: true,
-        dialectOptions: { 
-        options: {
-            encrypt: true
-        }
+        dialectOptions: {
+            ssl: false
         },
+        port: process.env.DB_PORT,
         retry: {
             match: [
                 Sequelize.TimeoutError,
