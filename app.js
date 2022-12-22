@@ -114,4 +114,5 @@ app.use('/account', accountRouter);
 app.use('/activities', activitiesRouter);
 app.use('/athletes', athletesRouter);
 
+app.enable('trust proxy');
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
