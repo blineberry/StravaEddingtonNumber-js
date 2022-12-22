@@ -1,4 +1,9 @@
 module.exports = (req, res, next) => {
+    // if we don't have a stravaToken, we're not logged in. Continue.
+    if (!req.session.stravaToken) {
+        return next();
+    }
+
     let utcNow = Date.now();
 
     if (new Date() < new Date(req.session.stravaToken.expiresAt)) {

@@ -2,6 +2,8 @@
 {% set contentClasses = "layout-page" %}
 {% extends "html.njk" %}
 
+{% block header %}<header></header>{% endblock %}
+
 {% block body %}
 
 <div class="copy account">
@@ -12,6 +14,17 @@
         <ul class="athlete-actions">  
             <li class="athlete-action">
                 <a href="/">View numbers</a>
+            <li class="athlete-action">
+            {% if athlete.isPublic === true %}
+                <form method="POST" action="/account/makePrivate">
+                    <input type="submit" value="Make private" />
+                </form>  
+            {% endif %}
+            {% if athlete.isPublic === false %}
+                <form method="POST" action="/account/makePublic">
+                    <input type="submit" value="Make public" />
+                </form>  
+            {% endif %}
         </ul>
         <ul class="athlete-actions">  
             <li class="athlete-action">      

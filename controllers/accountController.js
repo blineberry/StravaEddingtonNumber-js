@@ -4,6 +4,7 @@ const primeStravaApi = require('../middleware/primeStravaApi');
 const loadAthlete = require('../middleware/loadAthlete');
 let stravaAuth = require('../DAL/stravaAuth');
 const request = require('superagent');
+const fetchNewStravaActivities = require('../middleware/fetchNewStravaActivities');
 
 let redirectToRootIfLoggedIn = (req, res, next) => {
     if (req.session.stravaToken) {
@@ -42,18 +43,46 @@ module.exports = {
         primeStravaApi, 
         loadAthlete,
         (req, res) => {
-            return res.render('account/index.njk', { athlete: req.appData.athlete });
+            return res.render('account/index.njk', { athlete: req.appData.loggedInAthlete });
         }
     ],
 
     loginGET: [redirectToRootIfLoggedIn, (req, res) => {
-        let state = req.query.redirect || '/';
-    
-        res.render('account/login.njk', { stravaAuthUrl: req.appData.db.stravaAuth.getConnectUrl(state) });
+        let returnUrl = req.query.redirect || '/';
+
+        res.render('account/login.njk', { 
+            stravaAuthUrl: req.appData.db.stravaAuth.getConnectUrl(req, returnUrl),
+         });
     }],
 
     authGET: (req, res) => {
-        let redirect = req.query.state || '/';
+        // Get the session nonce and remove so it can't be reused.
+        let nonce = req.session.stravaAuthNonce;
+        req.session.stravaAuthNonce = undefined;
+
+        // Don't continue if state is missing.
+        if (!req.query.state) {
+            res.status(400).send('State missing from request.');
+        }
+
+        let state = JSON.parse(Buffer.from(req.query.state, 'base64').toString());
+
+        // Don't continue if nonce is missing
+        if (!state.nonce) {
+            res.status(400).send('Nonce missing from request.');
+        }
+
+        // Don't continue if nonce doesn't match.
+        if (state.nonce !== nonce) {
+            res.status(400).send('Nonce does not match.');
+        }
+
+        let redirect = state.returnUrl || '/';
+
+        // Don't allow an open redirect
+        if (redirect[0] !== "/" && !redirect.startsWith(`${ req.protocol }://${ req.hostname }`)) {
+            res.status(400).send('Invalid redirect');
+        }
     
         stravaAuth.exchangeAuthorizationCodeForTokensAsync(req.query.code, req.query.scope)
         .then(req.appData.db.saveTokens)
@@ -98,25 +127,25 @@ module.exports = {
         (req, res) => {
             let activitiesDeletePromise = req.appData.db.activity.destroy({
                 where: {
-                    athleteId: req.appData.athlete.id
+                    athleteId: req.appData.loggedInAthlete.id
                 }
             });
 
             let athleteDeletePromise = req.appData.db.athlete.destroy({
                 where: {
-                    id: req.appData.athlete.id
+                    id: req.appData.loggedInAthlete.id
                 }
             });
 
             let accessDeletePromise = req.appData.db.accessToken.destroy({
                 where: {
-                    athleteId: req.appData.athlete.id
+                    athleteId: req.appData.loggedInAthlete.id
                 }
             });
 
             let refreshDeletePromise = req.appData.db.refreshToken.destroy({
                 where: {
-                    athleteId: req.appData.athlete.id
+                    athleteId: req.appData.loggedInAthlete.id
                 }
             });
 
@@ -138,5 +167,29 @@ module.exports = {
                 console.log(err);
                 res.send('error');
             });
+    }],
+    makePublicPOST: [requireStravaAuth, refreshStravaToken, loadAthlete,
+        (req,res) => {
+            req.appData.db.athlete.update({
+                isPublic: true
+            }, {
+                where: {
+                    id: req.appData.loggedInAthlete.id,
+                }
+            }).then(() => {
+                res.redirect('/athletes/' + req.appData.loggedInAthlete.id);
+            });            
+    }],
+    makePrivatePOST: [requireStravaAuth, refreshStravaToken, loadAthlete,
+        (req,res) => {
+            req.appData.db.athlete.update({
+                isPublic: false
+            }, {
+                where: {
+                    id: req.appData.loggedInAthlete.id,
+                }
+            }).then(() => {
+                res.redirect('/athletes/' + req.appData.loggedInAthlete.id);
+            });            
     }]
 };

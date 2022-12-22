@@ -1,6 +1,9 @@
-{% set title = "Eddington Numbers" %}
 {% set contentClasses = "layout-home" %}
 {% extends "html.njk" %}
+
+{% block head %}
+<meta
+{% endblock %}
 
 {% block body %}
 
@@ -8,7 +11,19 @@
   <img class="u-photo athlete-image" alt="photo of {{ athlete.firstname }}"
        src="{{ athlete.profileImageUrl }}"/>
   <div><span class="p-name athlete-name">{{ athlete.firstname }} {{ athlete.lastname }}</span> | <a href="{{ athlete.stravaUrl }}" class="u-url athlete-stravalink">View on Strava</a></div>
-  <div><a href="/account">Settings</a></div>
+  {% if isLoggedInAthlete %}
+  {% if athlete.isPublic === true %}
+  <div class="athlete-share"><button id="share-button" data-url={{ meta.canonicalUrl }} data-title={{ title }} data-text="{{ share.text }}" class="btn">Share</button></div>
+  {% endif %}
+  <div class="athlete-privacynote">    
+    {% if athlete.isPublic === true %}
+      <p><small>Your Eddington Numbers page is Public. You can share this page URL with&nbsp;others.</small><p><small> You can make your Eddington Numbers page Private in&nbsp;<a href="/account">settings</a>.</small>
+    {% endif %}
+    {% if athlete.isPublic === false %}
+      <p><small>Your Eddington Numbers page is&nbsp;Private.</small><p><small> If you would like to share this page with others, change your Eddington Numbers page to Public in&nbsp;<a href="/account">settings</a>.</small>
+    {% endif %}
+  </div>
+  {% endif %}
 </div>
 
 
@@ -41,4 +56,11 @@
 <p><a href="/eddington">More about Eddington Numbers</a></p>
 </div>
 
+{% endblock %}
+
+{% block endBody %}
+{{ super() }}
+{% if athlete.isPublic === true %}
+<script src="/static/site.js"></script>
+{% endif %}
 {% endblock %}

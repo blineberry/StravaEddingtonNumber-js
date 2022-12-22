@@ -5,15 +5,60 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ title }}</title>
 <link rel="stylesheet" href="/static/style.css" type="text/css">
+
+{% if title %}
+<meta property="og:title" content="{{ title }}">
+{% endif %}
+{% if socialMeta.type %}
+<meta property="og:type" content="{{ socialMeta.type }}">
+{% endif %}
+{% if socialMeta.image %}
+<meta property="og:image" content="{{ socialMeta.image }}">
+{% endif %}
+{% if meta.canonicalUrl %}
+<link rel="canonical" href="{{ meta.canonicalUrl }}">
+<meta property="og:url" content="{{ meta.canonicalUrl  }}">
+{% endif %}
+{% if socialMeta.card %}
+<meta name="twitter:card" content="{{ socialMeta.card }}">
+{% endif %}
+{% if meta.description %}
+<meta name="description" content="{{ meta.description }}" >
+<meta property="og:description" content="{{ meta.description }}">
+{% endif %}
+{% if socialMeta.siteName %}
+<meta property="og:site_name" content="{{ socialMeta.siteName }}">
+{% endif %}
+{% if socialMeta.imageAlt %}
+<meta name="twitter:image:alt" content="{{ socialMeta.imageAlt }}">
+{% endif %}
+{% block head %}
+
+{% endblock %}
 </head>
 <body>
+{% block header %}
+<header class="header">
+    <nav>
+        <ul class="header-nav-list">
+        {% if isLoggedIn %}
+            <li class="header-nav-listitem"><a class="header-nav-link" href="/athletes/{{ loggedInAthlete.id }}">My Eddington Numbers</a>
+            <li class="header-nav-listitem"><a class="header-nav-link" href="/account">Settings</a>
+        {% else %}
+            <li class="header-nav-listitem"><a class="header-nav-link" href="{{ loginUrl }}">Log in</a>
+        {% endif %}
+        </ul>
+    </nav>
+</header>
+{% endblock %}
 <div class="content {{ contentClasses }}">
 {% block body %}{% endblock %}
 </div>
 <footer class="footer">
-    <span class="footer-item">Made by <a href="https://twitter.com/BrentLineberry">@BrentLineberry</a>.</span>
+    <span class="footer-item">Made by <a href="https://orangegnome.com">Brent Lineberry</a>.</span>
     <span class="footer-item"><a href="/data">Data Disclosure</a></span>
     <img class="footer-item footer-strava" src="/static/api_logo_pwrdBy_strava_horiz_gray.svg" alt="Powered by Strava" />
 </footer>
+{% block endBody %}{% endblock %}
 </body>
 </html>

@@ -9,6 +9,7 @@ const data = require('./DAL/data');
 const indexRouter = require('./routes/index');
 const accountRouter = require('./routes/account');
 const activitiesRouter = require('./routes/activities');
+const athletesRouter = require('./routes/athletes');
 const dbConfig = require('./dbconfig.js');
 
 const app = express();
@@ -99,6 +100,8 @@ app.use((req, res, next) => {
         req.appData = {};
     }
 
+    req.appData.loginUrl = '/account/login?redirect=' + encodeURIComponent(req.baseUrl + req.path);
+
     req.appData.db = data;
     next();
 });
@@ -109,5 +112,6 @@ app.use('/static', express.static('public'));
 app.use('/', indexRouter);
 app.use('/account', accountRouter);
 app.use('/activities', activitiesRouter);
+app.use('/athletes', athletesRouter);
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

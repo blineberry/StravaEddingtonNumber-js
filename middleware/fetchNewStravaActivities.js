@@ -33,8 +33,24 @@ let getPromisedActivities = (activitiesApi, before, after, activities, page, cal
 }
 
 module.exports = (req, res, next) => {
+    // If an athlete is not logged in, continue.
+    if (!req.appData.loggedInAthlete) {
+        return next();
+    }
+
+    // If no requested athlete, continue.
+    if (!req.appData.athlete) {
+        return next();
+    }
+
+    // If the requested Athlete is not the Logged in Athlete, continue.
+    if (req.appData.athlete.id !== req.appData.loggedInAthlete.id) {
+        return next();
+    }
+
+    // If the logged in user is viewing their own page, fetch their activities.
     let fetchTime = Math.floor(Date.now() / 1000);
-    let athlete = req.appData.athlete;
+    let athlete = req.appData.loggedInAthlete;
     
     let stravaActivitiesPromise = new Promise((resolve) => resolve());
     
