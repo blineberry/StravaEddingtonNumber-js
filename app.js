@@ -1,8 +1,7 @@
 const express = require('express');
 const Sequelize = require('sequelize');
 const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
-const { createClient } = require('redis');
+const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const nunjucks = require('nunjucks');
 
 const data = require('./DAL/data');
@@ -39,33 +38,6 @@ app.use((req, res, next) => {
     return res.status(403).send('HTTPS Required');
 });
 
-
-// If development, use the in-memory session store
-let sessionConfig = {
-    secret: process.env.SESSION_SECRET.split(',')
-};
-
-// Can't get redis to work in prod, so keep using in-memory store.
-/*
-if (process.env.NODE_ENV !== "development") {
-    let redisClient = createClient({ legacyMode: true });
-    redisClient.connect().catch(console.error);
-
-    console.log(redisClient);
-
-    sessionConfig = {
-        store: new RedisStore({ client: redisClient }),
-        saveUninitialized: false,
-        secret: process.env.SESSION_SECRET.split(','),
-        //secure: process.env.NODE_ENV === "development" ? false : true,
-        //name: 'connect.sid.strava',
-        resave: false,
-    };
-}*/
-
-// setup session
-app.use(session(sessionConfig));
-
 let dbInitialized = false;
 
 // initialize db
@@ -79,6 +51,20 @@ sequelize.authenticate()
 .catch(err => {
     console.log(err);
 });
+
+// Configure the session
+let sessionConfig = {
+    secret: process.env.SESSION_SECRET.split(','),
+    store: new SequelizeStore({
+        db: sequelize,
+        checkExpirationInterval: 15 * 60 * 1000, // The interval at which to cleanup expired sessions in milliseconds.
+        expiration: 30 * 24 * 60 * 60 * 1000  // The maximum age (in milliseconds) of a valid session.
+    }),
+    resave: false
+};
+
+// setup session
+app.use(session(sessionConfig));
 
 // send a sensible response if db connection failed
 app.use((req,res,next) => {
