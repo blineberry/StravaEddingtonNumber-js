@@ -1,4 +1,9 @@
 module.exports = (req, res, next) => {
+    // If no strava token, then we don't have an athlete to load.
+    if (!req.session.stravaToken) {
+        return next();
+    }
+
     return req.appData.db.athlete.findByPk(req.session.stravaToken.athleteId)
     .then(athlete => {
         if (athlete && !req.session.updateAthlete) {
@@ -31,7 +36,7 @@ module.exports = (req, res, next) => {
               
     })
     .then(athlete => {
-        req.appData.athlete = athlete;
+        req.appData.loggedInAthlete = athlete;
         next();
         return athlete;
     })

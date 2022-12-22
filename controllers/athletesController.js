@@ -1,17 +1,50 @@
-const requireStravaAuth = require('../middleware/requireStravaAuth');
 const refreshStravaToken = require('../middleware/refreshStravaToken');
 const primeStravaApi = require('../middleware/primeStravaApi');
 const loadAthlete = require('../middleware/loadAthlete');
 const fetchNewStravaActivities = require('../middleware/fetchNewStravaActivities');
 const eddington = require('../eddington');
+const requireStravaAuth = require('../middleware/requireStravaAuth');
 
-let indexGET = (req, res) => {
-    res.redirect('/athletes/' + req.appData.loggedInAthlete.id);
-    return;
+let authenticateRequest = (req, res, next) => {
+    req.appData.db.athlete.findByPk(req.params.id).then(athlete => {
+        // Assign the fetched athlete to the request.
+        req.appData.athlete = athlete;
 
+        // If the requested athlete is public, no need to authenticate.
+        if (athlete.isPublic) {
+            return next();
+        }        
+
+        // If the athlete is not logged in, redirect to login page.
+        if (!req.appData.loggedInAthlete) {
+            return requireStravaAuth(req,res,next);
+        }
+
+        // If logged in. Continue.
+        next();
+    });
+}
+
+let authorizeRequest = async (req, res, next) => {    
+    // If the requested athlete is public, the user is authorized.
+    if (req.appData.athlete.isPublic) {
+        return next();
+    }
+
+    // If the athlete account is private and the logged in athlete is
+    // the requested athlete, the user is authorized.
+    if (req.appData.athlete.id === req.appData.loggedInAthlete?.id) {
+        return next();
+    }
+    
+    // Otherwise the user is not authorized.
+    return res.status(403).send();
+}
+
+let detailsGET = async (req, res) => {
     req.appData.db.activity.findAll({
         where: {
-            athleteId: req.appData.loggedInAthlete.id
+            athleteId: req.appData.athlete.id
         }
     })
     .then(activities => {
@@ -47,7 +80,7 @@ let indexGET = (req, res) => {
         }
 
         res.render('home/home.njk', {
-            athlete: req.appData.loggedInAthlete,
+            athlete: req.appData.athlete,
             eddingtonNumbers,
             activityCount: activities.length,
         });
@@ -59,20 +92,12 @@ let indexGET = (req, res) => {
 };
 
 module.exports = {
-    indexGET: [requireStravaAuth, 
-        refreshStravaToken, 
-        primeStravaApi, 
+    detailsGET: [
+        refreshStravaToken,
+        primeStravaApi,
         loadAthlete,
+        authenticateRequest,
+        authorizeRequest,
         fetchNewStravaActivities,
-        indexGET
-    ],
-    eddingtonGET: [(req, res) => {
-        res.render('home/eddington.njk', { 
-            stravaAuthUrl: req.appData.db.stravaAuth.getConnectUrl(), 
-            isLoggedIn: !!req.session.stravaToken
-        });
-    }],
-    dataGET: [(req, res) => {
-        res.render('home/data.njk');
-    }],
+        detailsGET]
 };

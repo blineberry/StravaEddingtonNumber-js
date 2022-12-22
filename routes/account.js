@@ -11,5 +11,7 @@ router.post('/logout', controller.logoutPOST);
 router.route('/delete')
     .get(controller.deleteGET)
     .post(controller.deletePOST);
+router.post('/makePublic', controller.makePublicPOST);
+router.post('/makePrivate', controller.makePrivatePOST);
 
 module.exports = router;

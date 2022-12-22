@@ -39,6 +39,10 @@ class Athlete extends Model {
       profileImageUrl: {
           type: Sequelize.STRING,
       },
+      isPublic: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
+      }
     }, {  
       sequelize,
       modelName: modelName

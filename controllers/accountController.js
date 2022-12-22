@@ -4,6 +4,7 @@ const primeStravaApi = require('../middleware/primeStravaApi');
 const loadAthlete = require('../middleware/loadAthlete');
 let stravaAuth = require('../DAL/stravaAuth');
 const request = require('superagent');
+const fetchNewStravaActivities = require('../middleware/fetchNewStravaActivities');
 
 let redirectToRootIfLoggedIn = (req, res, next) => {
     if (req.session.stravaToken) {
@@ -42,7 +43,7 @@ module.exports = {
         primeStravaApi, 
         loadAthlete,
         (req, res) => {
-            return res.render('account/index.njk', { athlete: req.appData.athlete });
+            return res.render('account/index.njk', { athlete: req.appData.loggedInAthlete });
         }
     ],
 
@@ -98,25 +99,25 @@ module.exports = {
         (req, res) => {
             let activitiesDeletePromise = req.appData.db.activity.destroy({
                 where: {
-                    athleteId: req.appData.athlete.id
+                    athleteId: req.appData.loggedInAthlete.id
                 }
             });
 
             let athleteDeletePromise = req.appData.db.athlete.destroy({
                 where: {
-                    id: req.appData.athlete.id
+                    id: req.appData.loggedInAthlete.id
                 }
             });
 
             let accessDeletePromise = req.appData.db.accessToken.destroy({
                 where: {
-                    athleteId: req.appData.athlete.id
+                    athleteId: req.appData.loggedInAthlete.id
                 }
             });
 
             let refreshDeletePromise = req.appData.db.refreshToken.destroy({
                 where: {
-                    athleteId: req.appData.athlete.id
+                    athleteId: req.appData.loggedInAthlete.id
                 }
             });
 
@@ -138,5 +139,29 @@ module.exports = {
                 console.log(err);
                 res.send('error');
             });
+    }],
+    makePublicPOST: [requireStravaAuth, refreshStravaToken, loadAthlete,
+        (req,res) => {
+            req.appData.db.athlete.update({
+                isPublic: true
+            }, {
+                where: {
+                    id: req.appData.loggedInAthlete.id,
+                }
+            }).then(() => {
+                res.redirect('/athletes/' + req.appData.loggedInAthlete.id);
+            });            
+    }],
+    makePrivatePOST: [requireStravaAuth, refreshStravaToken, loadAthlete,
+        (req,res) => {
+            req.appData.db.athlete.update({
+                isPublic: false
+            }, {
+                where: {
+                    id: req.appData.loggedInAthlete.id,
+                }
+            }).then(() => {
+                res.redirect('/athletes/' + req.appData.loggedInAthlete.id);
+            });            
     }]
 };

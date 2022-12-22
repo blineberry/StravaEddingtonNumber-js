@@ -10,7 +10,7 @@ module.exports = {
         (req, res) => {
             req.appData.db.activity.destroy({
                 where: {
-                    athleteId: req.appData.athlete.id
+                    athleteId: req.appData.loggedInAthlete.id
                 }
             })
             .then(() => {
@@ -19,7 +19,7 @@ module.exports = {
                 },
                 {
                     where: {
-                        id: req.appData.athlete.id
+                        id: req.appData.loggedInAthlete.id
                     }
                 });
             })
@@ -35,7 +35,7 @@ module.exports = {
         (req, res) => {
             let deleteActivitiesPromise = req.appData.db.activity.destroy({
                 where: {
-                    athleteId: req.appData.athlete.id
+                    athleteId: req.appData.loggedInAthlete.id
                 }
             });
 
@@ -43,7 +43,7 @@ module.exports = {
                 activityFetchTime: 0
             }, {
                 where: {
-                    id: req.appData.athlete.id
+                    id: req.appData.loggedInAthlete.id
                 }
             });
 
