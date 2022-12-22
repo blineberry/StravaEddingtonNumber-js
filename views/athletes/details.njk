@@ -1,4 +1,3 @@
-{% set title = "Eddington Numbers" %}
 {% set contentClasses = "layout-home" %}
 {% extends "html.njk" %}
 
@@ -8,7 +7,17 @@
   <img class="u-photo athlete-image" alt="photo of {{ athlete.firstname }}"
        src="{{ athlete.profileImageUrl }}"/>
   <div><span class="p-name athlete-name">{{ athlete.firstname }} {{ athlete.lastname }}</span> | <a href="{{ athlete.stravaUrl }}" class="u-url athlete-stravalink">View on Strava</a></div>
+  {% if isLoggedInAthlete %}
   <div><a href="/account">Settings</a></div>
+  <div class="athlete-privacynote">    
+    {% if athlete.isPublic === true %}
+      <p><small>Your Eddington Numbers page is Public. You can share this page URL with&nbsp;others.</small><p><small> You can make your Eddington Numbers page Private in&nbsp;<a href="/account/settings">settings</a>.</small>
+    {% endif %}
+    {% if athlete.isPublic === false %}
+      <p><small>Your Eddington Numbers page is&nbsp;Private.</small><p><small> If you would like to share this page with others, change your Eddington Numbers page to Public in&nbsp;<a href="/account/settings">settings</a>.</small>
+    {% endif %}
+  </div>
+  {% endif %}
 </div>
 
 

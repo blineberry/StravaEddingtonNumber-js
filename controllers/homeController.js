@@ -72,7 +72,14 @@ module.exports = {
             isLoggedIn: !!req.session.stravaToken
         });
     }],
-    dataGET: [(req, res) => {
-        res.render('home/data.njk');
+    dataGET: [refreshStravaToken, 
+        primeStravaApi, 
+        loadAthlete,
+        (req, res) => {
+        res.render('home/data.njk', {
+            loggedInAthlete: req.appData.loggedInAthlete,
+            isLoggedIn: !!req.session.stravaToken,
+            loginUrl: req.appData.loginUrl
+        });
     }],
 };

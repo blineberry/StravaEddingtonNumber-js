@@ -7,11 +7,25 @@
 <link rel="stylesheet" href="/static/style.css" type="text/css">
 </head>
 <body>
+{% block header %}
+<header class="header">
+    <nav>
+        <ul class="header-nav-list">
+        {% if isLoggedIn %}
+            <li class="header-nav-listitem"><a class="header-nav-link" href="/athletes/{{ loggedInAthlete.id }}">My Eddington Numbers</a>
+            <li class="header-nav-listitem"><a class="header-nav-link" href="/account">Settings</a>
+        {% else %}
+            <li class="header-nav-listitem"><a class="header-nav-link" href="{{ loginUrl }}">Log in</a>
+        {% endif %}
+        </ul>
+    </nav>
+</header>
+{% endblock %}
 <div class="content {{ contentClasses }}">
 {% block body %}{% endblock %}
 </div>
 <footer class="footer">
-    <span class="footer-item">Made by <a href="https://twitter.com/BrentLineberry">@BrentLineberry</a>.</span>
+    <span class="footer-item">Made by <a href="https://orangegnome.com">Brent Lineberry</a>.</span>
     <span class="footer-item"><a href="/data">Data Disclosure</a></span>
     <img class="footer-item footer-strava" src="/static/api_logo_pwrdBy_strava_horiz_gray.svg" alt="Powered by Strava" />
 </footer>

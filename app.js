@@ -100,6 +100,8 @@ app.use((req, res, next) => {
         req.appData = {};
     }
 
+    req.appData.loginUrl = '/account/login?redirect=' + encodeURIComponent(req.baseUrl + req.path);
+
     req.appData.db = data;
     next();
 });

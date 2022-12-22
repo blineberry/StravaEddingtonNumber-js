@@ -79,10 +79,15 @@ let detailsGET = async (req, res) => {
             });
         }
 
-        res.render('home/home.njk', {
+        res.render('athletes/details.njk', {
+            loggedInAthlete: req.appData.loggedInAthlete,
             athlete: req.appData.athlete,
             eddingtonNumbers,
             activityCount: activities.length,
+            title: `${req.appData.athlete.firstname} ${req.appData.athlete.lastname}'s Eddington Numbers`,
+            isLoggedInAthlete: req.appData.athlete.id === req.appData.loggedInAthlete?.id,
+            isLoggedIn: !!req.appData.loggedInAthlete,
+            loginUrl: req.appData.loginUrl
         });
     })
     .catch(error => {
