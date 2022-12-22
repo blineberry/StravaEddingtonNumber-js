@@ -8,54 +8,6 @@ const eddington = require('../eddington');
 let indexGET = (req, res) => {
     res.redirect('/athletes/' + req.appData.loggedInAthlete.id);
     return;
-
-    req.appData.db.activity.findAll({
-        where: {
-            athleteId: req.appData.loggedInAthlete.id
-        }
-    })
-    .then(activities => {
-        let activityTypes = activities.map(a => a.type).filter((v,i,a) => {
-            return i === a.indexOf(v);
-        });
-        let eddingtonNumbers = [];
-
-        for (let i = 0; i < activityTypes.length; i++) {
-            let type = activityTypes[i];
-            let eNumData = eddington.getENumFromActivities(activities.filter(a => a.type === type).map(a => {
-                return {
-                    distance: a.distance / 1609.344,
-                    date: a.startDate
-                };
-            }), true);
-
-            let nextENum = eNumData.eNum + 1;
-            let nextENumCount = eNumData.counts[nextENum];
-
-            if (!nextENumCount) {
-                nextENumCount = 0;
-            }
-
-            eddingtonNumbers.push({
-                type: type,
-                eNum: eNumData.eNum,
-                eNumCount: eNumData.counts[eNumData.eNum],
-                nextENum,
-                nextENumDelta: nextENum - nextENumCount,
-                count: eNumData.activities.length
-            });
-        }
-
-        res.render('home/home.njk', {
-            athlete: req.appData.loggedInAthlete,
-            eddingtonNumbers,
-            activityCount: activities.length,
-        });
-    })
-    .catch(error => {
-        console.log(error);
-        res.send('error');
-    });
 };
 
 module.exports = {
@@ -68,7 +20,7 @@ module.exports = {
     ],
     eddingtonGET: [(req, res) => {
         res.render('home/eddington.njk', { 
-            stravaAuthUrl: req.appData.db.stravaAuth.getConnectUrl(), 
+            stravaAuthUrl: req.appData.db.stravaAuth.getConnectUrl(req), 
             isLoggedIn: !!req.session.stravaToken
         });
     }],

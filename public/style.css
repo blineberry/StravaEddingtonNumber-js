@@ -51,6 +51,7 @@ a:link, a:visited, a:hover, a:active {
     flex-direction: row;
     margin: 0;
     padding: 0;
+    text-align: center;
 }
 
 .header-nav-listitem {
@@ -96,6 +97,16 @@ a:link, a:visited, a:hover, a:active {
     padding: 0 1em;
     margin: 1em auto;
     text-align: center;
+}
+
+.athlete-share button {
+    display: none;
+    font-size: 0.85em;
+    margin-top: 0.5em;
+}
+
+.athlete-share button.share-supported {
+    display: inline-block;
 }
 
 .athlete-image {
@@ -252,9 +263,17 @@ a:link, a:visited, a:hover, a:active {
         max-width: 31.94em; /* 575px */
     }
 
+    .header-nav-list {
+        text-align: left;
+    }
+
     .athlete {
         grid-column: 1 / 1;
         grid-row: 1 / 1;
+    }
+
+    .athlete-share button {
+        font-size: 0.75em;
     }
 
     .athlete-privacynote {

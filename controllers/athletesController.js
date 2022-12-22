@@ -41,6 +41,57 @@ let authorizeRequest = async (req, res, next) => {
     return res.status(403).send();
 }
 
+let getDescription = function(athlete, eddingtonNumbers) {
+    let numbers = eddingtonNumbers.sort(sortEddingtonNumbers);
+
+    let description = `${ athlete.firstname } ${ athlete.lastname }'s Eddington numbers are: `;
+
+    for (let i = 0; i < numbers.length; i++) {
+        // Stop if we've hit 0 numbers.
+        if (numbers[i].eNum === 0) {
+            break;
+        }
+
+        // Add a comma after the first one
+        if (i > 0) {
+            description += ", "
+        }
+
+        description += `${ numbers[i].type } ${ numbers[i].eNum }`
+    }
+
+    description += '.';
+
+    return description;
+};
+
+let sortEddingtonNumbers = function(a,b) {
+    return b.eNum - a.eNum;
+};
+
+let getShareText = function(eddingtonNumbers) {
+    let numbers = eddingtonNumbers.sort(sortEddingtonNumbers);
+
+    let shareText = `Check out my Eddington numbers!`;
+
+    for (let i = 0; i < numbers.length; i++) {
+        // Stop if we've hit 0 numbers.
+        if (numbers[i].eNum === 0) {
+            break;
+        }
+
+        // Double space for the first one.
+        if (i === 0) {
+            shareText += "\n"
+        }
+
+        shareText += `\n${ numbers[i].type }: ${ numbers[i].eNum } `
+    }
+
+    shareText += "\n"
+    return shareText;
+};
+
 let detailsGET = async (req, res) => {
     req.appData.db.activity.findAll({
         where: {
@@ -79,15 +130,32 @@ let detailsGET = async (req, res) => {
             });
         }
 
+        let title = `${req.appData.athlete.firstname} ${req.appData.athlete.lastname}'s Eddington Numbers`;
+        let description = getDescription(req.appData.athlete, eddingtonNumbers);
+
         res.render('athletes/details.njk', {
             loggedInAthlete: req.appData.loggedInAthlete,
             athlete: req.appData.athlete,
             eddingtonNumbers,
             activityCount: activities.length,
-            title: `${req.appData.athlete.firstname} ${req.appData.athlete.lastname}'s Eddington Numbers`,
+            title,
             isLoggedInAthlete: req.appData.athlete.id === req.appData.loggedInAthlete?.id,
             isLoggedIn: !!req.appData.loggedInAthlete,
-            loginUrl: req.appData.loginUrl
+            loginUrl: req.appData.loginUrl,
+            meta: {
+                canonicalUrl: `${ req.protocol }://${ req.hostname }/athletes/${ req.appData.athlete.id }`,
+                description
+            },
+            socialMeta: {
+                type: 'profile',
+                card: "summary",
+                siteName: "Eddington Numbers | Orange Gnome",
+                image: req.appData.athlete.profileImageUrl,
+                imageAlt: `Strava profile picture of ${ req.appData.athlete.firstname } ${ req.appData.athlete.lastname }`
+            }, 
+            share: {
+                text: getShareText(eddingtonNumbers)
+            }
         });
     })
     .catch(error => {

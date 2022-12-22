@@ -1,8 +1,17 @@
 const request = require('superagent');
 const tokenEndpoint = 'https://www.strava.com/oauth/token';
+const crypto = require('crypto');
 
 module.exports = {
-    getConnectUrl: (state) => {
+    getConnectUrl: (req, returnUrl) => {
+        req.session.stravaAuthNonce = crypto.randomBytes(8).toString('base64');
+        returnUrl = returnUrl || '/';
+
+        let state = Buffer.from(JSON.stringify({
+            nonce: req.session.stravaAuthNonce,
+            returnUrl
+        })).toString('base64'); 
+
         let statePiece = '';
         
         if (state) {
