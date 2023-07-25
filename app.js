@@ -52,6 +52,8 @@ sequelize.authenticate()
     console.log(err);
 });
 
+console.log(process.env);
+
 // Configure the session
 let sessionConfig = {
     secret: process.env.SESSION_SECRET.split(','),
